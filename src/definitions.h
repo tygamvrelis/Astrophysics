@@ -25,7 +25,12 @@
 /* [Beg] user-defined constants (do not change this line) */
 
 #define CONST_Rjupiter           6.9911e10
-#define  UNIT_LENGTH             (2.0*CONST_au)
+#define CONST_Rplanet           (2.0*CONST_au)
+
+/** Number of seconds for planet to complete a rotation about its own axis */
+#define CONST_period            (3.0*24.0*3600.0)
+
+#define UNIT_LENGTH             CONST_Rplanet
 
 /* [End] user-defined constants (do not change this line) */
 
