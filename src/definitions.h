@@ -16,7 +16,7 @@
 #define  ENTROPY_SWITCH          NO
 #define  THERMAL_CONDUCTION      NO
 #define  VISCOSITY               NO
-#define  ROTATING_FRAME          NO
+#define  ROTATING_FRAME          YES
 
 /* -- user-defined parameters (labels) -- */
 
@@ -25,7 +25,7 @@
 /* [Beg] user-defined constants (do not change this line) */
 
 #define CONST_Rjupiter           6.9911e10
-#define CONST_Rplanet           (2.0*CONST_au)
+#define CONST_Rplanet           (2.0*CONST_Rjupiter)
 
 /** Number of seconds for planet to complete a rotation about its own axis */
 #define CONST_period            (3.0*24.0*3600.0)
