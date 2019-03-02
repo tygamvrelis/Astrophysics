@@ -54,8 +54,8 @@ void Init (double *us, double x1, double x2, double x3)
   us[VX1] = 0.0;
   us[VX2] = 0.0;
   #if ROTATING_FRAME == YES
-   g_OmegaZ = (2.0*CONST_PI/CONST_period) * UNIT_LENGTH / UNIT_VELOCITY;
-   us[VX3] = g_OmegaZ * rs;
+   g_OmegaZ = (1 / CONST_period) * UNIT_LENGTH / UNIT_VELOCITY;
+   us[VX3] = 0.0; // g_OmegaZ * rs;
   #else
    us[VX3] = 0.0;
   #endif

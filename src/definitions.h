@@ -24,22 +24,15 @@
 
 /* [Beg] user-defined constants (do not change this line) */
 
-#define CONST_Rjupiter           6.9911e10
+#define CONST_Rjupiter           6.9911e9
 #define CONST_Rplanet           (2.0*CONST_Rjupiter)
 
 /** Number of seconds for planet to complete a rotation about its own axis */
 #define CONST_period            (3.0*24.0*3600.0)
 
-#define UNIT_LENGTH             CONST_Rplanet
-
 /* [End] user-defined constants (do not change this line) */
 
 /* -- supplementary constants (user editable) -- */ 
 
-#define  INITIAL_SMOOTHING   NO
-#define  WARNING_MESSAGES    YES
-#define  PRINT_TO_FILE       YES
-#define  INTERNAL_BOUNDARY   NO
-#define  SHOCK_FLATTENING    NO
-#define  CHAR_LIMITING       NO
-#define  LIMITER             MC_LIM
+#define UNIT_LENGTH             CONST_Rplanet
+#define LIMITER             VANLEER_LIM
