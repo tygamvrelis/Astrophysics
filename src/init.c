@@ -67,10 +67,10 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
      // 
      // Note that g_domBeg[KDIR] is the coordinate value the elevation grid
      // begins at.
-     static const double m = 1.0/(1.0 - 2.0*g_domBeg[KDIR]/CONST_PI);
-     static const double b = -1.0*g_domBeg[KDIR]*m;
-     static const double RMAX = g_domEnd[IDIR];
-     static const double VMAX = g_inputParam[WIND_MAX_SPEED];
+     const double m = 1.0/(1.0 - 2.0*g_domBeg[KDIR]/CONST_PI);
+     const double b = -1.0*g_domBeg[KDIR]*m;
+     const double RMAX = g_domEnd[IDIR];
+     const double VMAX = g_inputParam[WIND_MAX_SPEED];
      double theta;
      double ampl = 1.0; // Amplitude modified by radius
      TOT_LOOP(k, j, i)
@@ -81,7 +81,7 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
          #if defined(WIND_QUAD)
           ampl = rs*rs/(RMAX*RMAX);
          #else
-          static double decay = g_inputParam[WIND_EXP_DECAY];
+          const double decay = g_inputParam[WIND_EXP_DECAY];
           ampl = exp(decay*(rs/RMAX - 1.0));
          #endif
          theta = x2[j];
