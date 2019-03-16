@@ -1,0 +1,1098 @@
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:12m:18s
+> Average time/step         2.17e-01  (sec)  
+> Local time                Fri Mar  8 18:42:47 2019
+> Done
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:12m:23s
+> Average time/step         2.18e-01  (sec)  
+> Local time                Fri Mar  8 18:42:52 2019
+> Done
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:13m:15s
+> Average time/step         2.33e-01  (sec)  
+> Local time                Fri Mar  8 18:43:44 2019
+> Done
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:13m:22s
+> Average time/step         2.35e-01  (sec)  
+> Local time                Fri Mar  8 18:43:51 2019
+> Done
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:13m:58s
+> Average time/step         2.46e-01  (sec)  
+> Local time                Fri Mar  8 18:44:27 2019
+> Done
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:14m:40s
+> Average time/step         2.58e-01  (sec)  
+> Local time                Fri Mar  8 18:45:09 2019
+> Done
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:15m:6s
+> Average time/step         2.66e-01  (sec)  
+> Local time                Fri Mar  8 18:45:35 2019
+> Done
+
+   ___  __   __  ____________   
+  / _ \/ /  / / / /_  __/ __ \ 
+ / ___/ /__/ /_/ / / / / /_/ /  
+/_/  /____/\____/ /_/  \____/   
+=============================    v. 4.2  
+
+> System:
+
+! sysconf.out file not found 
+
+> Local time:       Fri Mar  8 18:30:29 2019
+
+> Cmd line args:    
+
+> Header configuration:
+
+  PHYSICS:          HD
+  DIMENSIONS:       3
+  COMPONENTS:       3
+  GEOMETRY:         Spherical
+  BODY_FORCE:       EXPLICIT
+  RECONSTRUCTION:   Linear TVD (Primitive lim)
+  TRACERS:          0
+  VARIABLES:        5
+  ENTROPY_SWITCH:   NO
+  LOADED MODULES:
+
+  ROTATION:         YES
+  EOS:              Ideal
+  TIME INTEGRATOR:  Runga-Kutta II
+  DIM. SPLITTING:   No
+
+> Runtime configuration (pluto.ini):
+
+  +----------------------------------------------------------
+  | [Grid]
+  | 
+  | X1-grid    2    0.01           20    u    1.0            10 u 1.2
+  | X2-grid    1    0.1745329248   36    u    2.967059729
+  | X3-grid    1    0.0            80    u    6.283185307
+  |  
+  | [Time]
+  | 
+  | CFL              0.25
+  | CFL_max_var      1.1
+  | tstop            3.0
+  | first_dt         1.e-5
+  | 
+  | [Solver]
+  | 
+  | Solver         hllc
+  | 
+  | [Boundary]
+  | 
+  | X1-beg        axisymmetric
+  | X1-end        userdef
+  | X2-beg        outflow
+  | X2-end        outflow
+  | X3-beg        periodic
+  | X3-end        periodic
+  | 
+  | [Static Grid Output]
+  | 
+  | uservar    0
+  | output_dir /mnt/raid-cita/gamvrelis/data/march/rotating_winds_3t_reflective_quad
+  | dbl        0.25  -1   single_file
+  | flt       -1.0  -1   single_file
+  | vtk       -1.0  -1   single_file
+  | tab       -1.0  -1   
+  | ppm       -1.0  -1   
+  | png       -1.0  -1   
+  | log        10000
+  | analysis  -1.0  -1 
+  |  
+  | [Parameters]
+  | 
+  | ALPHA                10.  
+  +---------------------------------------------------------
+
+> Generating grid...
+
+  X1: [ 0.010000,  1.200000], 30 point(s), 2 ghosts
+  X2: [ 0.174533,  2.967060], 36 point(s), 2 ghosts
+  X3: [ 0.000000,  6.283185], 80 point(s), 2 ghosts
+
+> Memory allocation
+> Assigning initial conditions (Startup) ...
+> Normalization Units:
+
+  [Density]:      1.673e-24 (gr/cm^3), 1.000e+00 (1/cm^3)
+  [Pressure]:     1.673e-14 (dyne/cm^2)
+  [Velocity]:     1.000e+05 (cm/s)
+  [Length]:       9.321e+09 (cm)
+  [Temperature]:  1.203e+02 X (p/rho*mu) (K)
+  [Time]:         9.321e+04 (sec), 2.956e-03 (yrs) 
+ 
+> Number of processors: 1
+> Typical proc size:    30 X 36 X 80
+> Basic data type:
+  sizeof (char)     = 1
+  sizeof (uchar)    = 1
+  sizeof (short)    = 2
+  sizeof (ushort)   = 2
+  sizeof (int)      = 4
+  sizeof (*int)     = 8
+  sizeof (float)    = 4
+  sizeof (double)   = 8
+  sizeof (*double)  = 8
+> Writing file #0 (dbl) to disk...
+> Starting computation... 
+
+step:0 ; t = 0.0000e+00 ; dt = 1.0000e-05 ; 0 % ; [0.000000, 0]
+> Writing file #1 (dbl) to disk...
+> Writing file #2 (dbl) to disk...
+> Writing file #3 (dbl) to disk...
+> Writing file #4 (dbl) to disk...
+> Writing file #5 (dbl) to disk...
+> Writing file #6 (dbl) to disk...
+> Writing file #7 (dbl) to disk...
+> Writing file #8 (dbl) to disk...
+> Writing file #9 (dbl) to disk...
+> Writing file #10 (dbl) to disk...
+> Writing file #11 (dbl) to disk...
+> Writing file #12 (dbl) to disk...
+
+> Total allocated memory   14.97 Mb
+> Elapsed time              0d:0h:15m:21s
+> Average time/step         2.70e-01  (sec)  
+> Local time                Fri Mar  8 18:45:50 2019
+> Done
+---------------------------------------------------
+Job Resources Requested:
+
+cput=100000:00:00,ncpus=1,neednodes=1:ppn=8,nodes=1:ppn=8,walltime=06:00:00
+---------------------------------------------------
+Job Resources Used:
+
+cput=01:53:15,mem=149080kb,vmem=263860kb,walltime=00:15:21
+---------------------------------------------------
+
+---------------------------------------------------
+Job Script:
+
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=6:00:00
+#PBS -r n
+#PBS -j oe
+#PBS -q workq
+
+# NOTE: for hpq and sandyq, ppn<=16
+#       for greenq ppn<=32
+#       multiples of 8 are preferred for ppn, e.g., ppn=8,16, or 32
+# If you are using nodes=1 and ppn<=8, please use the workq instead
+
+# go to your working directory
+cd /home/gamvrelis/PLUTO/Work/del/3t_reflective_quad
+
+# Load your modules
+# If you use module purge, make sure to load the maui and torque modules
+# e.g.,
+# module purge
+# module load maui torque
+
+# Intel compiler and MPI
+module load intel intelmpi
+
+# or for OpenMPI
+# module load gcc/7.3.0 openmpi/3.0.0-gcc-7.3.0
+
+#mpirun ./your_mpi_code your_arguments
+
+# NOTE: mpirun without args will use all available cores e.g, 8x16=128 in this example
+# To limit the number of cores per host (say for hybrid Openmp/OpenMPI codes) use one of the
+# mpirun load balancing options
+# e.g., for OpenMPI one
+
+mpirun -np 8 -map-by node:SPAN ./pluto
+---------------------------------------------------
+
