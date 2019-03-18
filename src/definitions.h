@@ -22,8 +22,6 @@
 /* -- user-defined parameters (labels) -- */
 
 #define  ALPHA                   0
-#define  WIND_EXP_DECAY          1
-#define  WIND_MAX_SPEED          2
 
 /* [Beg] user-defined constants (do not change this line) */
 

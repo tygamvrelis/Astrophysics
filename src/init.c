@@ -70,9 +70,9 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
      const double m = 1.0/(1.0 - 2.0*g_domBeg[KDIR]/CONST_PI);
      const double b = -1.0*g_domBeg[KDIR]*m;
      const double RMAX = g_domEnd[IDIR];
-     const double VMAX = g_inputParam[WIND_MAX_SPEED];
-     double theta;
+     double VMAX = 1.0; // Maximum speed in km/s
      double ampl = 1.0; // Amplitude modified by radius
+     double theta;
      TOT_LOOP(k, j, i)
      {
        rs = x1[i];
@@ -81,8 +81,8 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
          #if defined(WIND_QUAD)
           ampl = rs*rs/(RMAX*RMAX);
          #else
-          const double decay = g_inputParam[WIND_EXP_DECAY];
-          ampl = exp(decay*(rs/RMAX - 1.0));
+          const double decay_rate = 10.0;
+          ampl = exp(decay_rate*(rs/RMAX - 1.0));
          #endif
          theta = x2[j];
          d->Vc[VX3][k][j][i] = VMAX*ampl*sin(theta*m + b);
