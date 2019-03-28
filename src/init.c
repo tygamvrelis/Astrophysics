@@ -15,24 +15,26 @@ void Init (double *us, double x1, double x2, double x3)
 {
   double rs = x1;
   double scrh;
+  double alpha = g_inputParam[ALPHA];
   if (rs > 1.0)
   {
-    us[RHO] = exp(g_inputParam[ALPHA]*(1.0/rs - 1.0));
+    us[RHO] = exp(alpha*(1.0/rs - 1.0));
   }
   else
   {
     scrh = 0.5*acf*(rs*rs - 1.0) + 1.0/3.0*bcf*(rs*rs*rs - 1.0)
               + 0.25*ccf*(rs*rs*rs*rs - 1.0);
-    us[RHO] = exp(scrh*g_inputParam[ALPHA]);
+    us[RHO] = exp(alpha*scrh);
   }
 
   #if ROTATING_FRAME == YES
    g_OmegaZ = (1.0/CONST_period)*UNIT_LENGTH/UNIT_VELOCITY;
+   us[RHO] *= exp(alpha*0.5*pow(g_OmegaZ,2)*pow(rs,2)*pow(sin(x2),2));
   #endif
   us[VX1] = 0.0;
   us[VX2] = 0.0;
   us[VX3] = 0.0;
-  us[PRS] = us[RHO]/g_inputParam[ALPHA];
+  us[PRS] = us[RHO]/alpha;
   us[TRC] = 0.0;
 }
 
@@ -92,14 +94,17 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
   }
   else if (side == X1_END)
   {
+    double alpha = g_inputParam[ALPHA];
+    double theta;
     X1_END_LOOP(k,j,i)
     {
       rs = x1[i];
-      d->Vc[RHO][k][j][i] = exp(g_inputParam[ALPHA]*(1.0/rs - 1.0));
-      EXPAND(d->Vc[VX1][k][j][i] = 0.0;   ,
-             d->Vc[VX2][k][j][i] = 0.0;   ,
-             d->Vc[VX3][k][j][i] = 0.0;)
-      d->Vc[PRS][k][j][i] = exp(g_inputParam[ALPHA]*(1.0/rs - 1.0))/g_inputParam[ALPHA];
+      theta = x2[j];
+      d->Vc[RHO][k][j][i] = exp(alpha*(1.0/rs - 1.0));
+      #if defined(ROTATING_FRAME)
+       d->Vc[RHO][k][j][i] *= exp(alpha*0.5*pow(g_OmegaZ,2)*pow(rs,2)*pow(sin(theta),2));
+      #endif
+      d->Vc[PRS][k][j][i] = d->Vc[RHO][k][j][i]/alpha;
     }
   }
 }

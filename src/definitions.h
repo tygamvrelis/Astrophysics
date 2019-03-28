@@ -2,7 +2,7 @@
 #define  DIMENSIONS              3
 #define  COMPONENTS              3
 #define  GEOMETRY                SPHERICAL
-#define  BODY_FORCE              POTENTIAL
+#define  BODY_FORCE              VECTOR
 #define  COOLING                 NO
 #define  RECONSTRUCTION          LINEAR
 #define  TIME_STEPPING           RK2
@@ -32,7 +32,7 @@
 #define CONST_period            (3.0*24.0*3600.0)
 
 // Enable winds
-#define WIND_EXP  // exponential profile
+//#define WIND_EXP  // exponential profile
 //#define WIND_QUAD // quadratic profile
 
 /* [End] user-defined constants (do not change this line) */
