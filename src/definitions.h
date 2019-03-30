@@ -8,8 +8,7 @@
 #define  TIME_STEPPING           RK2
 #define  DIMENSIONAL_SPLITTING   NO
 #define  NTRACER                 0
-#define  USER_DEF_PARAMETERS     1
-#define  INTERNAL_BOUNDARY       YES
+#define  USER_DEF_PARAMETERS     4
 
 /* -- physics dependent declarations -- */
 
@@ -22,6 +21,9 @@
 /* -- user-defined parameters (labels) -- */
 
 #define  ALPHA                   0
+#define  VMAX                    1
+#define  EXP_DECAY               2
+#define  TRELAX                  3
 
 /* [Beg] user-defined constants (do not change this line) */
 
@@ -32,7 +34,7 @@
 #define CONST_period            (3.0*24.0*3600.0)
 
 // Enable winds
-//#define WIND_EXP  // exponential profile
+#define WIND_EXP  // exponential profile
 //#define WIND_QUAD // quadratic profile
 
 /* [End] user-defined constants (do not change this line) */

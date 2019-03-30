@@ -57,42 +57,7 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
   x2 = grid[JDIR].xgc;
   x3 = grid[KDIR].xgc;
 
-  if (side == 0)
-  {
-    #if defined(WIND_EXP) || defined(WIND_QUAD)
-     // We scale the sin argument so that it is 0 wherever the end of our
-     // elevation grid is, and it is maximal at the equator
-     // 
-     // Thus, m and b are derived from:
-     //     1. sin(g_domBeg[KDIR]*m + b) = 0
-     //     2. sin((pi/2)*m + b) = 1
-     // 
-     // Note that g_domBeg[KDIR] is the coordinate value the elevation grid
-     // begins at.
-     const double m = 1.0/(1.0 - 2.0*g_domBeg[KDIR]/CONST_PI);
-     const double b = -1.0*g_domBeg[KDIR]*m;
-     const double RMAX = g_domEnd[IDIR];
-     double VMAX = 1.0; // Maximum speed in km/s
-     double ampl = 1.0; // Amplitude modified by radius
-     double theta;
-     TOT_LOOP(k, j, i)
-     {
-       rs = x1[i];
-       if (rs >= 0.9*RMAX)
-       {
-         #if defined(WIND_QUAD)
-          ampl = rs*rs/(RMAX*RMAX);
-         #else
-          const double decay_rate = 10.0;
-          ampl = exp(decay_rate*(rs/RMAX - 1.0));
-         #endif
-         theta = x2[j];
-         d->Vc[VX3][k][j][i] = VMAX*ampl*sin(theta*m + b);
-       }
-     }
-    #endif
-  }
-  else if (side == X1_END)
+  if (side == X1_END)
   {
     double alpha = g_inputParam[ALPHA];
     double theta;
@@ -114,20 +79,49 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
 #if (BODY_FORCE & VECTOR)
 void BodyForceVector(double *v, double *g, double x1, double x2, double x3)
 {
-  double gs;
-  double rs = x1;
-  if (rs > 1.0)
-  {
-    gs = -1.0/rs/rs;
-  }
-  else
-  {
-    gs = rs*(acf + rs*(bcf + rs*ccf));
-  }
+    double gs;
+    double rs = x1;
+    double theta = x2;
+    if (rs > 1.0)
+    {
+        gs = -1.0/rs/rs;
+    }
+    else
+    {
+        gs = rs*(acf + rs*(bcf + rs*ccf));
+    }
 
-  g[IDIR] = gs;
-  g[JDIR] = 0.0;
-  g[KDIR] = 0.0;
+    g[IDIR] = gs;
+    g[JDIR] = 0.0;
+    g[KDIR] = 0.0;
+
+#if defined(WIND_EXP) || defined(WIND_QUAD)
+    // We scale the sin argument so that it is 0 wherever the end of our
+    // elevation grid is, and it is maximal at the equator
+    // 
+    // Thus, m and b are derived from:
+    //     1. sin(g_domBeg[JDIR]*m + b) = 0
+    //     2. sin((pi/2)*m + b) = 1
+    // 
+    // Note that g_domBeg[JDIR] is the coordinate value the elevation grid
+    // begins at.
+    const double R_MAX = g_domEnd[IDIR];
+    if (rs >= 0.9*R_MAX)
+    {
+        const double m = 1.0/(1.0 - 2.0*g_domBeg[JDIR]/CONST_PI);
+        const double b = -1.0*g_domBeg[JDIR]*m;
+        const double T_RELAX = g_inputParam[TRELAX];
+        const double V_MAX = g_inputParam[VMAX]; // Maximum speed in km/s
+    #if defined(WIND_QUAD)
+        double ampl = rs*rs/(R_MAX*R_MAX);
+    #else
+        const double decay_rate = g_inputParam[EXP_DECAY];
+        double ampl = exp(decay_rate*(rs/R_MAX - 1.0));
+    #endif
+        double v_relax = V_MAX*ampl*sin(theta*m + b);
+        g[KDIR] = (v_relax - v[VX3]) / T_RELAX;
+    }
+#endif
 }
 #endif
 
@@ -136,20 +130,20 @@ void BodyForceVector(double *v, double *g, double x1, double x2, double x3)
 #if (BODY_FORCE & POTENTIAL)
 double BodyForcePotential(double x1, double x2, double x3)
 {
-  // integration constant to make phi continuous
-  static const double C = 0.5*acf + bcf/3.0 + ccf*0.25;
+    // integration constant to make phi continuous
+    static const double C = 0.5*acf + bcf/3.0 + ccf*0.25;
 
-  double phi;
-  double rs = x1;
-  if (rs > 1.0)
-  {
-    phi = -1.0/rs;
-  }
-  else
-  {
-    phi = -rs*rs*(0.5*acf + rs*(bcf/3.0 + rs*ccf*0.25)) + C - 1.0;
-  }
+    double phi;
+    double rs = x1;
+    if (rs > 1.0)
+    {
+        phi = -1.0/rs;
+    }
+    else
+    {
+        phi = -rs*rs*(0.5*acf + rs*(bcf/3.0 + rs*ccf*0.25)) + C - 1.0;
+    }
 
-  return phi;
+    return phi;
 }
 #endif
