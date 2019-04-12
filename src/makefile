@@ -7,7 +7,7 @@
 pluto:                              # Default target
 
 ARCH         = Linux.gcc.defs
-PLUTO_DIR    = /home/gamvrelis/PLUTO/
+PLUTO_DIR    = /home/gamvrelis/PLUTO
 SRC          = $(PLUTO_DIR)/Src
 INCLUDE_DIRS = -I. -I$(SRC)
 VPATH        = ./:$(SRC)/New:$(SRC):$(SRC)/Time_Stepping:$(SRC)/States
@@ -70,9 +70,12 @@ endif
 # ---------------------------------------------------------
 
 OBJ += plm_states.o
+OBJ += vec_pot_diff.o
+OBJ += vec_pot_update.o
 OBJ += rk_step.o
 OBJ += update_stage.o
-include $(SRC)/HD/makefile
+include $(SRC)/MHD/makefile
+include $(SRC)/MHD/CT/makefile
 include $(SRC)/EOS/Ideal/makefile
 
 # ---------------------------------------------------------

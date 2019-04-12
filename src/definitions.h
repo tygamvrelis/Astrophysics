@@ -1,4 +1,4 @@
-#define  PHYSICS                 HD
+#define  PHYSICS                 MHD
 #define  DIMENSIONS              3
 #define  COMPONENTS              3
 #define  GEOMETRY                SPHERICAL
@@ -14,6 +14,9 @@
 
 #define  EOS                     IDEAL
 #define  ENTROPY_SWITCH          NO
+#define  DIVB_CONTROL            CONSTRAINED_TRANSPORT
+#define  BACKGROUND_FIELD        YES
+#define  RESISTIVITY             NO
 #define  THERMAL_CONDUCTION      NO
 #define  VISCOSITY               NO
 #define  ROTATING_FRAME          YES
@@ -27,19 +30,10 @@
 
 /* [Beg] user-defined constants (do not change this line) */
 
-#define CONST_Rjupiter           6.9911e9
-#define CONST_Rplanet           (1.6*CONST_Rjupiter)
-
-/** Number of seconds for planet to complete a rotation about its sun */
-#define CONST_period            (3.0*24.0*3600.0)
-
-// Enable winds
-#define WIND_EXP  // exponential profile
-//#define WIND_QUAD // quadratic profile
-
-/* [End] user-defined constants (do not change this line) */
-
-/* -- supplementary constants (user editable) -- */ 
+#define  CONST_Rjupiter          6.9911e9
+#define  CONST_Rplanet           (1.6*CONST_Rjupiter)
+#define  CONST_period            (3.0*24.0*3600.0)
+#define  WIND_EXP                //
 
 // With unit length defined this way, CONST_Rplanet will measure the radius of
 // the planet all the way up to the end of the R-coordinate, as desired. At the
@@ -47,4 +41,9 @@
 // but will instead define the location where the gravity body force changes,
 // as before
 #define UNIT_LENGTH         (CONST_Rplanet/g_domEnd[IDIR])
-#define LIMITER             VANLEER_LIM
+
+/* [End] user-defined constants (do not change this line) */
+
+/* -- supplementary constants (user editable) -- */ 
+#define  LIMITER                   VANLEER_LIM
+#define  CT_EMF_AVERAGE            UCT_HLL

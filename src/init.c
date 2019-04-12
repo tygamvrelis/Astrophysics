@@ -3,6 +3,7 @@
  * @brief Based on the stratified atmosphere test problem
  */
 
+#include <stdbool.h>
 #include "pluto.h"
 
 // Polynomial coefficient for g when r < 1. With this choice, g and g' will be
@@ -11,31 +12,61 @@ static const real acf = -3.0;
 static const real bcf =  2.0;
 static const real ccf = 0.0;
 
-void Init (double *us, double x1, double x2, double x3)
+double init_density(double x1, double x2, double x3)
 {
   double rs = x1;
   double scrh;
   double alpha = g_inputParam[ALPHA];
+  double rho;
   if (rs > 1.0)
   {
-    us[RHO] = exp(alpha*(1.0/rs - 1.0));
+    rho = exp(alpha*(1.0/rs - 1.0));
   }
   else
   {
     scrh = 0.5*acf*(rs*rs - 1.0) + 1.0/3.0*bcf*(rs*rs*rs - 1.0)
               + 0.25*ccf*(rs*rs*rs*rs - 1.0);
-    us[RHO] = exp(alpha*scrh);
+    rho = exp(alpha*scrh);
   }
 
   #if ROTATING_FRAME == YES
-   g_OmegaZ = (1.0/CONST_period)*UNIT_LENGTH/UNIT_VELOCITY;
-   us[RHO] *= exp(alpha*0.5*pow(g_OmegaZ,2)*pow(rs,2)*pow(sin(x2),2));
+    rho *= exp(alpha*0.5*pow(g_OmegaZ,2)*pow(rs,2)*pow(sin(x2),2));
   #endif
+
+  return rho;
+}
+
+double init_pressure(double rho)
+{
+  return rho/g_inputParam[ALPHA];
+}
+
+void Init (double *us, double x1, double x2, double x3)
+{
+  #if ROTATING_FRAME == YES
+    g_OmegaZ = (1.0/CONST_period)*UNIT_LENGTH/UNIT_VELOCITY;
+  #endif
+  us[RHO] = init_density(x1, x2, x3);
+  us[PRS] = init_pressure(us[RHO]); 
   us[VX1] = 0.0;
   us[VX2] = 0.0;
   us[VX3] = 0.0;
-  us[PRS] = us[RHO]/alpha;
   us[TRC] = 0.0;
+}
+
+//-----------------------------------------------------------------------------
+
+// Sets initial curl-free magnetic field component
+// Runs after init.
+void BackgroundField (double x1, double x2, double x3, double *B0)
+{
+  double rho = init_density(x1, x2, x3);
+  double P = init_pressure(rho);
+  // Magnetic pressure: Bz << sqrt(8*pi*P)
+  double Bz = sqrt(8.0 * CONST_PI * P) / 1000.0;
+  B0[0] = cos(x2) * Bz;      // r
+  B0[1] = -1 * sin(x2) * Bz; // theta
+  B0[2] = 0;                 // phi
 }
 
 //-----------------------------------------------------------------------------
