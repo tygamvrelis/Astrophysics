@@ -3,6 +3,7 @@
  * @brief Based on the stratified atmosphere test problem
  */
 
+#include <float.h>
 #include <stdbool.h>
 #include "pluto.h"
 
@@ -41,13 +42,16 @@ double init_pressure(double rho)
   return rho/g_inputParam[ALPHA];
 }
 
+static double min_P = DBL_MAX;
 void Init (double *us, double x1, double x2, double x3)
 {
   #if ROTATING_FRAME == YES
     g_OmegaZ = (1.0/CONST_period)*UNIT_LENGTH/UNIT_VELOCITY;
   #endif
   us[RHO] = init_density(x1, x2, x3);
-  us[PRS] = init_pressure(us[RHO]); 
+  double P = init_pressure(us[RHO]);
+  us[PRS] = P;
+  min_P = (P < min_P) ? P : min_P;
   us[VX1] = 0.0;
   us[VX2] = 0.0;
   us[VX3] = 0.0;
@@ -59,11 +63,9 @@ void Init (double *us, double x1, double x2, double x3)
 // Sets initial curl-free magnetic field component
 // Runs after init.
 void BackgroundField (double x1, double x2, double x3, double *B0)
-{
-  double rho = init_density(x1, x2, x3);
-  double P = init_pressure(rho);
+{  
   // Magnetic pressure: Bz << sqrt(8*pi*P)
-  double Bz = sqrt(8.0 * CONST_PI * P) / 1000.0;
+  double Bz = sqrt(8.0 * CONST_PI * min_P) / 1000.0;
   B0[0] = cos(x2) * Bz;      // r
   B0[1] = -1 * sin(x2) * Bz; // theta
   B0[2] = 0;                 // phi
