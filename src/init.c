@@ -60,16 +60,46 @@ void Init (double *us, double x1, double x2, double x3)
 
 //-----------------------------------------------------------------------------
 
+#if defined(B_UNIFORM) || defined (B_DIPOLE)
 // Sets initial curl-free magnetic field component
 // Runs after init.
+static bool first = true;
+static double M;
 void BackgroundField (double x1, double x2, double x3, double *B0)
-{  
-  // Magnetic pressure: Bz << sqrt(8*pi*P)
-  double Bz = sqrt(8.0 * CONST_PI * min_P) / 1000.0;
-  B0[0] = cos(x2) * Bz;      // r
-  B0[1] = -1 * sin(x2) * Bz; // theta
-  B0[2] = 0;                 // phi
+{
+  #if defined(UNIFORM)
+  {
+    // Magnetic pressure: Bz << sqrt(8*pi*P)
+    double Bz = sqrt(8.0 * CONST_PI * min_P) / 1000.0;
+    B0[0] = cos(x2) * Bz;      // r
+    B0[1] = -1 * sin(x2) * Bz; // theta
+    B0[2] = 0;                 // phi
+  }
+  #elif defined(B_DIPOLE)
+  {
+    if (first)
+    {
+      first = false;
+      // Convert input to code units
+      double B = g_inputParam[BSURFACE] / (
+        UNIT_VELOCITY * sqrt(4 * CONST_PI * UNIT_DENSITY)
+      );
+
+      // |M| = (B * r^3) / (1 + 3*(cos(theta))^2)
+      // At equator (theta = 90), this reduces to |M| = B * r^3
+      // TODO: What r-value is the "surface value" supposed to be taken at?
+      // For now assume it's the edge of the planet
+      M = B * pow(g_domEnd[IDIR], 3);
+    }
+
+    double r_cubed = pow(x1, 3);
+    B0[0] = 2 * M * cos(x2) / r_cubed;
+    B0[1] = M * sin(x2) / r_cubed;
+    B0[2] = 0.0;
+  }
+  #endif
 }
+#endif
 
 //-----------------------------------------------------------------------------
 
