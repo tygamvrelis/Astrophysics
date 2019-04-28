@@ -62,17 +62,17 @@ void Init (double *us, double x1, double x2, double x3)
   us[TRC] = 0.0;
 
   #if PHYSICS == MHD
-    v[BX1] = 0.0;
-    v[BX2] = 0.0;
-    v[BX3] = 0.0;
+    us[BX1] = 0.0;
+    us[BX2] = 0.0;
+    us[BX3] = 0.0;
 
-    v[AX1] = 0.0;
-    v[AX2] = 0.0;
-    v[AX3] = 0.0;
+    us[AX1] = 0.0;
+    us[AX2] = 0.0;
+    us[AX3] = 0.0;
   #endif
 
   #if defined(B_DIPOLE) && (BACKGROUND_FIELD == NO)
-    DipoleField (x1, x2, x3, &v[BX1], &v[BX2], &v[AX3]);
+    DipoleField (x1, x2, x3, &us[BX1], &us[BX2], &us[AX3]);
   #endif
 }
 

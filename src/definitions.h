@@ -15,7 +15,7 @@
 #define  EOS                     IDEAL
 #define  ENTROPY_SWITCH          NO
 #define  DIVB_CONTROL            CONSTRAINED_TRANSPORT
-#define  BACKGROUND_FIELD        YES
+#define  BACKGROUND_FIELD        NO
 #define  RESISTIVITY             NO
 #define  THERMAL_CONDUCTION      NO
 #define  VISCOSITY               NO
@@ -60,6 +60,8 @@
 // as before
 #define UNIT_LENGTH         (CONST_Rplanet/g_domEnd[IDIR])
 #define UNIT_DENSITY        1e-9
+
+#define ASSIGN_VECTOR_POTENTIAL YES
 
 /* [End] user-defined constants (do not change this line) */
 
