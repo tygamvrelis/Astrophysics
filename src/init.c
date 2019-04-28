@@ -39,7 +39,7 @@ double init_density(double x1, double x2, double x3)
 
 double init_pressure(double rho)
 {
-  return rho/g_inputParam[ALPHA];
+  return rho / g_inputParam[ALPHA];
 }
 
 static double min_P = DBL_MAX;
@@ -48,14 +48,32 @@ void Init (double *us, double x1, double x2, double x3)
   #if ROTATING_FRAME == YES
     g_OmegaZ = (1.0/CONST_period)*UNIT_LENGTH/UNIT_VELOCITY;
   #endif
+
   us[RHO] = init_density(x1, x2, x3);
+
   double P = init_pressure(us[RHO]);
   us[PRS] = P;
   min_P = (P < min_P) ? P : min_P;
+
   us[VX1] = 0.0;
   us[VX2] = 0.0;
   us[VX3] = 0.0;
+
   us[TRC] = 0.0;
+
+  #if PHYSICS == MHD
+    v[BX1] = 0.0;
+    v[BX2] = 0.0;
+    v[BX3] = 0.0;
+
+    v[AX1] = 0.0;
+    v[AX2] = 0.0;
+    v[AX3] = 0.0;
+  #endif
+
+  #if defined(B_DIPOLE) && (BACKGROUND_FIELD == NO)
+    DipoleField (x1, x2, x3, &v[BX1], &v[BX2], &v[AX3]);
+  #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -63,10 +81,9 @@ void Init (double *us, double x1, double x2, double x3)
 #if defined(B_UNIFORM) || defined (B_DIPOLE)
 // Sets initial curl-free magnetic field component
 // Runs after init.
-static double M;
 void BackgroundField (double x1, double x2, double x3, double *B0)
 {
-  #if defined(UNIFORM)
+  #if defined(B_UNIFORM)
   {
     // Magnetic pressure: Bz << sqrt(8*pi*P)
     double Bz = sqrt(8.0 * CONST_PI * min_P) / 1000.0;
@@ -76,28 +93,46 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
   }
   #elif defined(B_DIPOLE)
   {
-    static bool first = false;
-    if (first)
-    {
-      first = false;
-      // Convert input to code units
-      double B = g_inputParam[BSURFACE] / (
-        UNIT_VELOCITY * sqrt(4 * CONST_PI * UNIT_DENSITY)
-      );
-
-      // |M| = (B * r^3) / (1 + 3*(cos(theta))^2)
-      // At equator (theta = 90), this reduces to |M| = B * r^3
-      M = B * pow(g_domEnd[IDIR], 3);
-    }
-
-    double r_cubed = pow(x1, 3);
-    B0[IDIR] = 2 * M * cos(x2) / r_cubed;
-    B0[JDIR] = M * sin(x2) / r_cubed;
-    B0[KDIR] = 0.0;
+    DipoleField(x1, x2, x3, &B0[IDIR], &B0[JDIR], NULL);
   }
+  #else
+    B0[IDIR] = 0.0;
+    B0[JDIR] = 0.0;
+    B0[KDIR] = 0.0;
   #endif
 }
 #endif
+
+//-----------------------------------------------------------------------------
+
+// Based on init.c in Test_Problems/MHD/Torus
+// Initializes dipole field in spherical coordinates
+void DipoleField(double x1, double x2, double x3, 
+                 double *Bx1, double *Bx2, double *A)
+{
+  static bool first = true;
+  static double M;
+  if (first)
+  {
+    first = false;
+    // Convert input to code units
+    double B = g_inputParam[BSURFACE] / (
+      UNIT_VELOCITY * sqrt(4 * CONST_PI * UNIT_DENSITY)
+    );
+
+    // |M| = (B * r^3) / (1 + 3*(cos(theta))^2)
+    // At equator (theta = 90), this reduces to |M| = B * r^3
+    M = B * pow(g_domEnd[IDIR], 3);
+  }
+
+  double r_cubed = pow(x1, 3);
+  *Bx1 = 2.0 * M *cos(x2) / r_cubed; // b_r
+  *Bx2 = M * sin(x2) / r_cubed;      // b_phi
+  if (A != NULL)
+  {
+    *A = *Bx2 * x1; // M * sin(x2) / pow(r, 2);
+  }
+}
 
 //-----------------------------------------------------------------------------
 
