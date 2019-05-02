@@ -15,7 +15,7 @@
 #define  EOS                     IDEAL
 #define  ENTROPY_SWITCH          NO
 #define  DIVB_CONTROL            CONSTRAINED_TRANSPORT
-#define  BACKGROUND_FIELD        NO
+#define  BACKGROUND_FIELD        YES
 #define  RESISTIVITY             NO
 #define  THERMAL_CONDUCTION      NO
 #define  VISCOSITY               NO
@@ -31,17 +31,22 @@
 
 /* [Beg] user-defined constants (do not change this line) */
 
+// #define  ASSIGN_VECTOR_POTENTIAL   YES
+#define  INITIAL_SMOOTHING         YES
+#define  LIMITER                   VANLEER_LIM
+#define  CT_EMF_AVERAGE            UCT_HLL
+
 // ----------------------------------------------------------------------------
 // Winds: Exponential or quadratic profile, or none
 // ----------------------------------------------------------------------------
 #define  WIND_EXP
-// #define WIND_QUAD
+// #define  WIND_QUAD
 
 // ----------------------------------------------------------------------------
 // Magnetic field: uniform vertical field, dipole, or none
 // ----------------------------------------------------------------------------
 #define B_DIPOLE
-// #define B_UNIFORM
+// #define  B_UNIFORM
 
 // ----------------------------------------------------------------------------
 // Planet parameters
@@ -58,13 +63,10 @@
 // same time, R=1 will not be the edge of the planet (R=g_domEnd[IDIR] will be)
 // but will instead define the location where the gravity body force changes,
 // as before
-#define UNIT_LENGTH         (CONST_Rplanet/g_domEnd[IDIR])
-#define UNIT_DENSITY        1e-9
-
-#define ASSIGN_VECTOR_POTENTIAL YES
+#define  UNIT_LENGTH         (CONST_Rplanet/g_domEnd[IDIR])
+#define  UNIT_DENSITY        1e-9
 
 /* [End] user-defined constants (do not change this line) */
 
 /* -- supplementary constants (user editable) -- */ 
-#define  LIMITER                   VANLEER_LIM
-#define  CT_EMF_AVERAGE            UCT_HLL
+
