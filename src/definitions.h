@@ -16,7 +16,7 @@
 #define  ENTROPY_SWITCH          NO
 #define  DIVB_CONTROL            CONSTRAINED_TRANSPORT
 #define  BACKGROUND_FIELD        YES
-#define  RESISTIVITY             NO
+#define  RESISTIVITY             SUPER_TIME_STEPPING
 #define  THERMAL_CONDUCTION      NO
 #define  VISCOSITY               NO
 #define  ROTATING_FRAME          YES

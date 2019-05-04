@@ -32,7 +32,7 @@ OBJ += bin_io.o colortable.o initialize.o jet_domain.o \
        main.o restart.o runtime_setup.o show_config.o  \
        set_image.o set_grid.o startup.o split_source.o \
        userdef_output.o write_data.o write_tab.o \
-       write_img.o write_vtk.o 
+       write_img.o write_vtk.o
 
 include $(SRC)/Math_Tools/makefile
 
@@ -74,8 +74,11 @@ OBJ += vec_pot_diff.o
 OBJ += vec_pot_update.o
 OBJ += rk_step.o
 OBJ += update_stage.o
+OBJ += sts.o
+OBJ += parabolic_rhs.o
 include $(SRC)/MHD/makefile
 include $(SRC)/MHD/CT/makefile
+include $(SRC)/MHD/Resistivity/makefile
 include $(SRC)/EOS/Ideal/makefile
 
 # ---------------------------------------------------------

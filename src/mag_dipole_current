@@ -11,7 +11,7 @@
 # If you are using nodes=1 and ppn<=8, please use the workq instead
 
 # go to your working directory
-cd /home/gamvrelis/PLUTO/Work/8_mag_dipole
+cd /home/gamvrelis/PLUTO/Work/9_mag_dipole_current
 
 # Load your modules
 # If you use module purge, make sure to load the maui and torque modules
