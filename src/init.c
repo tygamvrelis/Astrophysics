@@ -143,7 +143,49 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
 
 void Analysis (const Data *d, Grid *grid)
 {
+  static bool first = true;
+  if (first)
+  {
+    first = false;
 
+    int   i, j, k;
+    double  *x1, *x2, *x3;
+
+    x1 = grid[IDIR].xgc;
+    x2 = grid[JDIR].xgc;
+    x3 = grid[KDIR].xgc;
+
+    // Log the background field to a file so that it can be read in an analysis
+    // script
+    char fname[512];
+    FILE *fp;
+    sprintf(fname, "%s/bg_field.dat", RuntimeGet()->output_dir);
+    fp = fopen(fname, "w");
+    double B0[3];
+    DOM_LOOP(k, j, i)
+    {
+      BackgroundField (x1[i], x2[j], x3[k], B0);
+      fprintf(fp, "%f %f %f\n", B0[IDIR], B0[JDIR], B0[KDIR]);
+    }
+    fclose(fp);
+    
+    // Log UNIT_* constants
+    sprintf(fname, "%s/unit_constants.dat", RuntimeGet()->output_dir);
+    fp = fopen(fname, "w");
+    fprintf(fp, "UNIT_DENSITY: %f\n", UNIT_DENSITY);
+    fprintf(fp, "UNIT_LENGTH: %f\n", UNIT_LENGTH);
+    fprintf(fp, "UNIT_VELOCITY: %f\n", UNIT_VELOCITY);
+    fclose(fp);
+
+    // Log arguments for user parameters
+    sprintf(fname, "%s/user_params.dat", RuntimeGet()->output_dir);
+    fp = fopen(fname, "w");
+    for (i = 0; i < USER_DEF_PARAMETERS; ++i)
+    {
+      fprintf(fp, "%f\n", g_inputParam[0]);
+    }
+    fclose(fp);
+  }
 }
 
 //-----------------------------------------------------------------------------
