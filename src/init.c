@@ -67,8 +67,8 @@ void DipoleField(double x1, double x2, double x3,
   }
 
   double r_cubed = pow(x1, 3);
-  *Bx1 = 2.0 * M *cos(x2) / r_cubed; // b_r
-  *Bx2 = M * sin(x2) / r_cubed;      // b_phi
+  *Bx1 = 2.0 * M * cos(x2) / r_cubed; // b_r
+  *Bx2 = M * sin(x2) / r_cubed;       // b_phi
   if (A != NULL)
   {
     *A = *Bx2 * x1; // M * sin(x2) / pow(r, 2);
@@ -172,9 +172,9 @@ void Analysis (const Data *d, Grid *grid)
     // Log UNIT_* constants
     sprintf(fname, "%s/unit_constants.dat", RuntimeGet()->output_dir);
     fp = fopen(fname, "w");
-    fprintf(fp, "UNIT_DENSITY: %f\n", UNIT_DENSITY);
-    fprintf(fp, "UNIT_LENGTH: %f\n", UNIT_LENGTH);
-    fprintf(fp, "UNIT_VELOCITY: %f\n", UNIT_VELOCITY);
+    fprintf(fp, "UNIT_DENSITY: %.10e\n", UNIT_DENSITY);
+    fprintf(fp, "UNIT_LENGTH: %.10e\n", UNIT_LENGTH);
+    fprintf(fp, "UNIT_VELOCITY: %.10e\n", UNIT_VELOCITY);
     fclose(fp);
 
     // Log arguments for user parameters
@@ -182,7 +182,7 @@ void Analysis (const Data *d, Grid *grid)
     fp = fopen(fname, "w");
     for (i = 0; i < USER_DEF_PARAMETERS; ++i)
     {
-      fprintf(fp, "%f\n", g_inputParam[0]);
+      fprintf(fp, "%f\n", g_inputParam[i]);
     }
     fclose(fp);
   }
