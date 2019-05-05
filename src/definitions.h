@@ -64,7 +64,7 @@
 // but will instead define the location where the gravity body force changes,
 // as before
 #define  UNIT_LENGTH         (CONST_Rplanet/g_domEnd[IDIR])
-#define  UNIT_DENSITY        1e-9
+#define  UNIT_DENSITY        1.0e-9
 
 /* [End] user-defined constants (do not change this line) */
 
