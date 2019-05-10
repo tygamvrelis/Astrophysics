@@ -1,11 +1,11 @@
-0 0.000000e+00 1.000000e-09 0 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-1 2.498899e-01 6.208260e-04 524 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-2 4.996832e-01 6.203408e-04 927 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-3 7.494492e-01 6.219127e-04 1329 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-4 9.995451e-01 6.223931e-04 1731 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-5 1.249802e+00 6.224500e-04 2133 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-6 1.499812e+00 6.212000e-04 2535 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-7 1.749787e+00 6.193574e-04 2938 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-8 1.999654e+00 6.176471e-04 3342 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-9 2.249527e+00 6.164023e-04 3747 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
-10 2.499658e+00 6.158921e-04 4153 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s 
+0 0.000000e+00 1.000000e-09 0 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+1 2.498899e-01 6.208260e-04 524 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+2 4.996832e-01 6.203408e-04 927 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+3 7.494492e-01 6.219127e-04 1329 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+4 9.995451e-01 6.223931e-04 1731 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+5 1.249802e+00 6.224500e-04 2133 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+6 1.499812e+00 6.212000e-04 2535 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+7 1.749787e+00 6.193574e-04 2938 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+8 1.999654e+00 6.176471e-04 3342 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+9 2.249527e+00 6.164023e-04 3747 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
+10 2.499658e+00 6.158921e-04 4153 single_file little rho vx1 vx2 vx3 bx1 bx2 bx3 prs bx1s bx2s bx3s jx1 jx2 jx3 
