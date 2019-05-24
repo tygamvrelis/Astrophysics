@@ -204,16 +204,24 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
   {
     double alpha = g_inputParam[ALPHA];
     double theta;
-    X1_END_LOOP(k,j,i)
-    {
-      rs = x1[i];
-      theta = x2[j];
-      d->Vc[RHO][k][j][i] = exp(alpha*(1.0/rs - 1.0));
-      #if defined(ROTATING_FRAME)
-       d->Vc[RHO][k][j][i] *= exp(alpha*0.5*pow(g_OmegaZ,2)*pow(rs,2)*pow(sin(theta),2));
-      #endif
-      d->Vc[PRS][k][j][i] = d->Vc[RHO][k][j][i]/alpha;
+    if (box->vpos == CENTER){
+      BOX_LOOP(box,k,j,i)
+      {
+        rs = x1[i];
+        theta = x2[j];
+        d->Vc[RHO][k][j][i] = exp(alpha*(1.0/rs - 1.0));
+#if defined(ROTATING_FRAME)
+        d->Vc[RHO][k][j][i] *= exp(alpha*0.5*pow(g_OmegaZ,2)*pow(rs,2)*pow(sin(theta),2));
+#endif
+        d->Vc[PRS][k][j][i] = d->Vc[RHO][k][j][i]/alpha;
+        d->Vc[BX1][k][j][i] *= -1.0;
+      }
     }
+#ifdef STAGGERED_MHD
+    if (box->vpos == X1FACE){
+      BOX_LOOP(box,k,j,i) d->Vs[BX1s][k][j][i] *= -1.0;
+    }
+#endif
   }
 }
 
