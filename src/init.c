@@ -204,6 +204,33 @@ void Analysis (const Data *d, Grid *grid)
     double eta_x3 = etas[KDIR][k][j][i];
     sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
   }
+  if (prank == 0){
+    static double tpos = -1.0;
+    if (g_stepNumber == 0){ /* -- open for writing if initial step -- */
+      char fname[64];
+      sprintf (fname, "%s/heating.dat", RuntimeGet()->output_dir); 
+      fp = fopen(fname,"w");
+      fprintf(fp,"# %4s  %12s  %12s\n", "time", "  step  ", " <eta|J|^2> ");
+    }else{
+      if (tpos < 0.0){ /* obtain time coordinate of last written line */
+        char sline[512];
+        fp = fopen("heating.dat","r");
+        if (fp == NULL){
+          print ("! Heating(): file heating.dat not found\n");
+          QUIT_PLUTO(1);
+        }
+        while (fgets(sline, 512, fp))  {
+        }
+        sscanf(sline, "%lf\n",&tpos);
+        fclose(fp);
+      }
+      fp = fopen("heating.dat","a");
+    }
+    if (g_time > tpos){ /* -- write -- */
+      fprintf(fp, "%12.6e  %4d  %12.6e\n", g_time, g_stepNumber, sum);
+    }
+    fclose(fp);
+  }
 }
 
 //-----------------------------------------------------------------------------
