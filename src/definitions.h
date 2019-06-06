@@ -28,6 +28,7 @@
 #define  EXP_DECAY               2
 #define  TRELAX                  3
 #define  BSURFACE                4
+#define  ETA                     5
 
 /* [Beg] user-defined constants (do not change this line) */
 
