@@ -8,7 +8,7 @@
 #define  TIME_STEPPING           RK2
 #define  DIMENSIONAL_SPLITTING   NO
 #define  NTRACER                 0
-#define  USER_DEF_PARAMETERS     5
+#define  USER_DEF_PARAMETERS     6
 
 /* -- physics dependent declarations -- */
 
@@ -28,6 +28,7 @@
 #define  EXP_DECAY               2
 #define  TRELAX                  3
 #define  BSURFACE                4
+#define  ETA                     5
 
 /* [Beg] user-defined constants (do not change this line) */
 

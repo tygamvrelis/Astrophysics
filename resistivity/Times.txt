@@ -1,0 +1,2 @@
+It took approximately 25 min of compute time to run at 1e0 [S/m]
+It took approximately 60 min of compute time to run at 1e5 [S/m]
