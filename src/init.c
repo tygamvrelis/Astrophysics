@@ -144,12 +144,12 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
 void Analysis (const Data *d, Grid *grid)
 {
   static bool first = true;
+  int i, j, k;
+  FILE* fp;
   if (first)
   {
     first = false;
-
-    int   i, j, k;
-    double  *x1, *x2, *x3;
+    double *x1, *x2, *x3;
 
     x1 = grid[IDIR].xgc;
     x2 = grid[JDIR].xgc;
@@ -158,7 +158,6 @@ void Analysis (const Data *d, Grid *grid)
     // Log the background field to a file so that it can be read in an analysis
     // script
     char fname[512];
-    FILE *fp;
     sprintf(fname, "%s/bg_field.dat", RuntimeGet()->output_dir);
     fp = fopen(fname, "w");
     double B0[3];
@@ -189,9 +188,9 @@ void Analysis (const Data *d, Grid *grid)
 
   // Compute volume integral of eta*|J|^2
   // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
-  double dx = grid->dx[IDIR];
-  double dy = grid->dx[JDIR];
-  double dz = grid->dx[KDIR];
+  double* dx = grid[IDIR].dx;
+  double* dy = grid[JDIR].dx;
+  double* dz = grid[KDIR].dx;
   Data_Arr etas = GetStaggeredEta();
   double sum = 0;
   DOM_LOOP(k,j,i){
@@ -204,33 +203,31 @@ void Analysis (const Data *d, Grid *grid)
     double eta_x3 = etas[KDIR][k][j][i];
     sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
   }
-  if (prank == 0){
-    static double tpos = -1.0;
-    if (g_stepNumber == 0){ /* -- open for writing if initial step -- */
-      char fname[64];
-      sprintf (fname, "%s/heating.dat", RuntimeGet()->output_dir); 
-      fp = fopen(fname,"w");
-      fprintf(fp,"# %4s  %12s  %12s\n", "time", "  step  ", " <eta|J|^2> ");
-    }else{
-      if (tpos < 0.0){ /* obtain time coordinate of last written line */
-        char sline[512];
-        fp = fopen("heating.dat","r");
-        if (fp == NULL){
-          print ("! Heating(): file heating.dat not found\n");
-          QUIT_PLUTO(1);
-        }
-        while (fgets(sline, 512, fp))  {
-        }
-        sscanf(sline, "%lf\n",&tpos);
-        fclose(fp);
+
+  static double tpos = -1.0;
+  if (g_stepNumber == 0){ /* -- open for writing if initial step -- */
+    char fname[64];
+    sprintf (fname, "%s/heating.dat", RuntimeGet()->output_dir); 
+    fp = fopen(fname,"w");
+    fprintf(fp,"# %4s  %12s  %12s\n", "time", "  step  ", " <eta|J|^2> ");
+  }else{
+    if (tpos < 0.0){ /* obtain time coordinate of last written line */
+      char sline[512];
+      fp = fopen("heating.dat","r");
+      if (fp == NULL){
+        print ("! Heating(): file heating.dat not found\n");
+        QUIT_PLUTO(1);
       }
-      fp = fopen("heating.dat","a");
+      while (fgets(sline, 512, fp));
+      sscanf(sline, "%lf\n",&tpos);
+      fclose(fp);
     }
-    if (g_time > tpos){ /* -- write -- */
-      fprintf(fp, "%12.6e  %4d  %12.6e\n", g_time, g_stepNumber, sum);
-    }
-    fclose(fp);
+    fp = fopen("heating.dat","a");
   }
+  if (g_time > tpos){ /* -- write -- */
+    fprintf(fp, "%12.6e  %4d  %12.6e\n", g_time, g_stepNumber, sum);
+  }
+  fclose(fp);
 }
 
 //-----------------------------------------------------------------------------
