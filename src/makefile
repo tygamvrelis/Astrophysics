@@ -75,7 +75,7 @@ OBJ += vec_pot_update.o
 OBJ += rk_step.o
 OBJ += update_stage.o
 OBJ += sts.o
-OBJ += parabolic_rhs.o
+OBJ += parabolic_update.o
 include $(SRC)/MHD/makefile
 include $(SRC)/MHD/CT/makefile
 include $(SRC)/MHD/Resistivity/makefile

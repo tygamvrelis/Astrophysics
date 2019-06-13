@@ -151,9 +151,9 @@ void Analysis (const Data *d, Grid *grid)
     first = false;
     double *x1, *x2, *x3;
 
-    x1 = grid[IDIR].xgc;
-    x2 = grid[JDIR].xgc;
-    x3 = grid[KDIR].xgc;
+    x1 = grid->xgc[IDIR];
+    x2 = grid->xgc[JDIR];
+    x3 = grid->xgc[KDIR];
 
     // Log the background field to a file so that it can be read in an analysis
     // script
@@ -188,13 +188,10 @@ void Analysis (const Data *d, Grid *grid)
 
   // Compute volume integral of eta*|J|^2
   // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
-  double* dx = grid[IDIR].dx;
-  double* dy = grid[JDIR].dx;
-  double* dz = grid[KDIR].dx;
   Data_Arr etas = GetStaggeredEta();
   double sum = 0;
   DOM_LOOP(k,j,i){
-    double dV  = dx[i]*dy[j]*dz[k];
+    double dV  = grid->dV[k][j][i];
     double Jx1 = d->J[IDIR][k][j][i];
     double Jx2 = d->J[JDIR][k][j][i];
     double Jx3 = d->J[KDIR][k][j][i];
@@ -238,9 +235,9 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
   double *x1, *x2, *x3;
   double rs;
 
-  x1 = grid[IDIR].xgc;
-  x2 = grid[JDIR].xgc;
-  x3 = grid[KDIR].xgc;
+  x1 = grid->xgc[IDIR];
+  x2 = grid->xgc[JDIR];
+  x3 = grid->xgc[KDIR];
 
   if (side == X1_END)
   {
