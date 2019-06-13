@@ -143,72 +143,54 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
 
 void Analysis (const Data *d, Grid *grid)
 {
-  static bool first = true;
-  int i, j, k;
-  FILE* fp;
-  if (first)
-  {
-    first = false;
-    double *x1, *x2, *x3;
-
-    x1 = grid->xgc[IDIR];
-    x2 = grid->xgc[JDIR];
-    x3 = grid->xgc[KDIR];
-
-    // Log the background field to a file so that it can be read in an analysis
-    // script
-    char fname[512];
-    sprintf(fname, "%s/bg_field.dat", RuntimeGet()->output_dir);
-    fp = fopen(fname, "w");
-    double B0[3];
-    DOM_LOOP(k, j, i)
+  if (prank == 0){
+    static bool first = true;
+    static double tpos = -1.0;
+    int i, j, k;
+    FILE* fp;
+    if (first)
     {
-      BackgroundField (x1[i], x2[j], x3[k], B0);
-      fprintf(fp, "%f %f %f\n", B0[IDIR], B0[JDIR], B0[KDIR]);
-    }
-    fclose(fp);
-    
-    // Log UNIT_* constants
-    sprintf(fname, "%s/unit_constants.dat", RuntimeGet()->output_dir);
-    fp = fopen(fname, "w");
-    fprintf(fp, "UNIT_DENSITY: %.10e\n", UNIT_DENSITY);
-    fprintf(fp, "UNIT_LENGTH: %.10e\n", UNIT_LENGTH);
-    fprintf(fp, "UNIT_VELOCITY: %.10e\n", UNIT_VELOCITY);
-    fclose(fp);
+      first = false;
+      double *x1, *x2, *x3;
 
-    // Log arguments for user parameters
-    sprintf(fname, "%s/user_params.dat", RuntimeGet()->output_dir);
-    fp = fopen(fname, "w");
-    for (i = 0; i < USER_DEF_PARAMETERS; ++i)
-    {
-      fprintf(fp, "%f\n", g_inputParam[i]);
-    }
-    fclose(fp);
-  }
+      x1 = grid->xgc[IDIR];
+      x2 = grid->xgc[JDIR];
+      x3 = grid->xgc[KDIR];
 
-  // Compute volume integral of eta*|J|^2
-  // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
-  Data_Arr etas = GetStaggeredEta();
-  double sum = 0;
-  DOM_LOOP(k,j,i){
-    double dV  = grid->dV[k][j][i];
-    double Jx1 = d->J[IDIR][k][j][i];
-    double Jx2 = d->J[JDIR][k][j][i];
-    double Jx3 = d->J[KDIR][k][j][i];
-    double eta_x1 = etas[IDIR][k][j][i];
-    double eta_x2 = etas[JDIR][k][j][i];
-    double eta_x3 = etas[KDIR][k][j][i];
-    sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
-  }
+      // Log the background field to a file so that it can be read in an analysis
+      // script
+      char fname[512];
+      sprintf(fname, "%s/bg_field.dat", RuntimeGet()->output_dir);
+      fp = fopen(fname, "w");
+      double B0[3];
+      DOM_LOOP(k, j, i)
+      {
+        BackgroundField (x1[i], x2[j], x3[k], B0);
+        fprintf(fp, "%f %f %f\n", B0[IDIR], B0[JDIR], B0[KDIR]);
+      }
+      fclose(fp);
+      
+      // Log UNIT_* constants
+      sprintf(fname, "%s/unit_constants.dat", RuntimeGet()->output_dir);
+      fp = fopen(fname, "w");
+      fprintf(fp, "UNIT_DENSITY: %.10e\n", UNIT_DENSITY);
+      fprintf(fp, "UNIT_LENGTH: %.10e\n", UNIT_LENGTH);
+      fprintf(fp, "UNIT_VELOCITY: %.10e\n", UNIT_VELOCITY);
+      fclose(fp);
 
-  static double tpos = -1.0;
-  if (g_stepNumber == 0){ /* -- open for writing if initial step -- */
-    char fname[64];
-    sprintf (fname, "%s/heating.dat", RuntimeGet()->output_dir); 
-    fp = fopen(fname,"w");
-    fprintf(fp,"# %4s  %12s  %12s\n", "time", "  step  ", " <eta|J|^2> ");
-  }else{
-    if (tpos < 0.0){ /* obtain time coordinate of last written line */
+      // Log arguments for user parameters
+      sprintf(fname, "%s/user_params.dat", RuntimeGet()->output_dir);
+      fp = fopen(fname, "w");
+      for (i = 0; i < USER_DEF_PARAMETERS; ++i)
+      {
+        fprintf(fp, "%f\n", g_inputParam[i]);
+      }
+      fclose(fp);
+
+      // Open up file for ohmic heating
+      sprintf (fname, "%s/heating.dat", RuntimeGet()->output_dir); 
+      fp = fopen(fname,"w");
+      fprintf(fp,"# %4s  %12s  %12s\n", "time", "  step  ", " <eta|J|^2> ");
       char sline[512];
       fp = fopen("heating.dat","r");
       if (fp == NULL){
@@ -219,12 +201,28 @@ void Analysis (const Data *d, Grid *grid)
       sscanf(sline, "%lf\n",&tpos);
       fclose(fp);
     }
+
+    // Compute volume integral of eta*|J|^2
+    // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
+    Data_Arr etas = GetStaggeredEta();
+    double sum = 0;
+    DOM_LOOP(k,j,i){
+      double dV  = grid->dV[k][j][i];
+      double Jx1 = d->J[IDIR][k][j][i];
+      double Jx2 = d->J[JDIR][k][j][i];
+      double Jx3 = d->J[KDIR][k][j][i];
+      double eta_x1 = etas[IDIR][k][j][i];
+      double eta_x2 = etas[JDIR][k][j][i];
+      double eta_x3 = etas[KDIR][k][j][i];
+      sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
+    }
+
     fp = fopen("heating.dat","a");
+    if (g_time > tpos){ // write
+      fprintf(fp, "%12.6e  %4d  %12.6e\n", g_time, g_stepNumber, sum);
+    }
+    fclose(fp);
   }
-  if (g_time > tpos){ /* -- write -- */
-    fprintf(fp, "%12.6e  %4d  %12.6e\n", g_time, g_stepNumber, sum);
-  }
-  fclose(fp);
 }
 
 //-----------------------------------------------------------------------------
