@@ -113,6 +113,13 @@ void Init (double *us, double x1, double x2, double x3)
 
 //-----------------------------------------------------------------------------
 
+void InitDomain (Data *d, Grid *grid)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+
 #if BACKGROUND_FIELD == YES
 // Sets initial curl-free magnetic field component
 // Runs after init.
@@ -143,23 +150,22 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
 
 void Analysis (const Data *d, Grid *grid)
 {
-  if (prank == 0){
+  if (prank == 0)
+  {
     static bool first = true;
-    static double tpos = -1.0;
+    static char fname[512];
     int i, j, k;
-    FILE* fp;
+    FILE* fp = NULL;
     if (first)
     {
       first = false;
       double *x1, *x2, *x3;
-
       x1 = grid->xgc[IDIR];
       x2 = grid->xgc[JDIR];
       x3 = grid->xgc[KDIR];
 
       // Log the background field to a file so that it can be read in an analysis
       // script
-      char fname[512];
       sprintf(fname, "%s/bg_field.dat", RuntimeGet()->output_dir);
       fp = fopen(fname, "w");
       double B0[3];
@@ -188,40 +194,52 @@ void Analysis (const Data *d, Grid *grid)
       fclose(fp);
 
       // Open up file for ohmic heating
-      sprintf (fname, "%s/heating.dat", RuntimeGet()->output_dir); 
-      fp = fopen(fname,"w");
-      fprintf(fp,"# %4s  %12s  %12s\n", "time", "  step  ", " <eta|J|^2> ");
-      char sline[512];
-      fp = fopen("heating.dat","r");
-      if (fp == NULL){
-        print ("! Heating(): file heating.dat not found\n");
-        QUIT_PLUTO(1);
-      }
-      while (fgets(sline, 512, fp));
-      sscanf(sline, "%lf\n",&tpos);
+      sprintf(fname, "%s/heating.dat", RuntimeGet()->output_dir); 
+      fp = fopen(fname, "w");
+      fprintf(fp, "# time step eta|J|^2\n");
       fclose(fp);
     }
 
-    // Compute volume integral of eta*|J|^2
-    // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
-    Data_Arr etas = GetStaggeredEta();
-    double sum = 0;
-    DOM_LOOP(k,j,i){
-      double dV  = grid->dV[k][j][i];
-      double Jx1 = d->J[IDIR][k][j][i];
-      double Jx2 = d->J[JDIR][k][j][i];
-      double Jx3 = d->J[KDIR][k][j][i];
-      double eta_x1 = etas[IDIR][k][j][i];
-      double eta_x2 = etas[JDIR][k][j][i];
-      double eta_x3 = etas[KDIR][k][j][i];
-      sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
+    static double tpos = -1.0;
+    sprintf(fname, "%s/heating.dat", RuntimeGet()->output_dir);
+    // Have to read from the file to see what the last written time was. A
+    // static variable will not work (even with the prank == 0) check because
+    // when PLUTO runs with multiple processes, each will have its own address
+    // space and hence its own static variables.
+    char sline[512];
+    fp = fopen(fname,"r");
+    if (fp == NULL){
+      print ("! Analysis(): file heating.dat not found\n");
+      QUIT_PLUTO(22);
     }
-
-    fp = fopen("heating.dat","a");
-    if (g_time > tpos){ // write
-      fprintf(fp, "%12.6e  %4d  %12.6e\n", g_time, g_stepNumber, sum);
-    }
+    while (fgets(sline, 512, fp));
+    sscanf(sline, "%lf\n", &tpos);
     fclose(fp);
+    if (g_time > tpos)
+    {
+      // Compute volume integral of eta*|J|^2
+      // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
+      Data_Arr etas = GetStaggeredEta();
+      double sum = 0;
+      DOM_LOOP(k,j,i){
+        double dV  = grid->dV[k][j][i];
+        double Jx1 = d->J[IDIR][k][j][i];
+        double Jx2 = d->J[JDIR][k][j][i];
+        double Jx3 = d->J[KDIR][k][j][i];
+        double eta_x1 = etas[IDIR][k][j][i];
+        double eta_x2 = etas[JDIR][k][j][i];
+        double eta_x3 = etas[KDIR][k][j][i];
+        sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
+      }
+
+      fp = fopen(fname, "a");
+      if (fp == NULL){
+        print("! Analysis(): file heating.dat not found\n");
+        QUIT_PLUTO(23);
+      }
+      fprintf(fp, "%f %ld %f\n", g_time, g_stepNumber, sum);
+      fclose(fp);
+    }
   }
 }
 
