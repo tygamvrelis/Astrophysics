@@ -196,11 +196,11 @@ void Analysis (const Data *d, Grid *grid)
       // Open up file for ohmic heating
       sprintf(fname, "%s/heating.dat", RuntimeGet()->output_dir); 
       fp = fopen(fname, "w");
-      fprintf(fp, "# time step eta|J|^2\n");
+      fprintf(fp, "# step time eta|J|^2\n");
       fclose(fp);
     }
 
-    static double tpos = -1.0;
+    static long int step = -1;
     sprintf(fname, "%s/heating.dat", RuntimeGet()->output_dir);
     // Have to read from the file to see what the last written time was. A
     // static variable will not work (even with the prank == 0) check because
@@ -213,9 +213,9 @@ void Analysis (const Data *d, Grid *grid)
       QUIT_PLUTO(22);
     }
     while (fgets(sline, 512, fp));
-    sscanf(sline, "%lf\n", &tpos);
+    sscanf(sline, "%ld\n", &step);
     fclose(fp);
-    if (g_time > tpos)
+    if (g_stepNumber > step)
     {
       // Compute volume integral of eta*|J|^2
       // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
@@ -237,7 +237,7 @@ void Analysis (const Data *d, Grid *grid)
         print("! Analysis(): file heating.dat not found\n");
         QUIT_PLUTO(23);
       }
-      fprintf(fp, "%f %ld %f\n", g_time, g_stepNumber, sum);
+      fprintf(fp, "%ld %f %f\n", g_stepNumber, g_time, sum);
       fclose(fp);
     }
   }
