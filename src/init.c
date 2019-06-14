@@ -215,21 +215,25 @@ void Analysis (const Data *d, Grid *grid)
     while (fgets(sline, 512, fp));
     sscanf(sline, "%ld\n", &step);
     fclose(fp);
-    if (g_stepNumber > step)
+    if (g_stepNumber > step && g_stepNumber > 0)
     {
-      // Compute volume integral of eta*|J|^2
-      // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
-      Data_Arr etas = GetStaggeredEta();
       double sum = 0;
-      DOM_LOOP(k,j,i){
-        double dV  = grid->dV[k][j][i];
-        double Jx1 = d->J[IDIR][k][j][i];
-        double Jx2 = d->J[JDIR][k][j][i];
-        double Jx3 = d->J[KDIR][k][j][i];
-        double eta_x1 = etas[IDIR][k][j][i];
-        double eta_x2 = etas[JDIR][k][j][i];
-        double eta_x3 = etas[KDIR][k][j][i];
-        sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
+      // If step is less than 1, the eta array will not exist
+      if (g_stepNumber > 0)
+      {
+        // Compute volume integral of eta*|J|^2
+        // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
+        Data_Arr etas = GetStaggeredEta();
+        DOM_LOOP(k,j,i){
+          double dV  = grid->dV[k][j][i];
+          double Jx1 = d->J[IDIR][k][j][i];
+          double Jx2 = d->J[JDIR][k][j][i];
+          double Jx3 = d->J[KDIR][k][j][i];
+          double eta_x1 = etas[IDIR][k][j][i];
+          double eta_x2 = etas[JDIR][k][j][i];
+          double eta_x3 = etas[KDIR][k][j][i];
+          sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
+        }
       }
 
       fp = fopen(fname, "a");
