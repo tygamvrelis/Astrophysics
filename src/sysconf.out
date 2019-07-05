@@ -1,0 +1,12 @@
+USER           = gamvrelis
+WORKING_DIR    = /home.default/gamvrelis/PLUTO/Work/del/resistivity_1e3Spm
+SYSTEM_NAME    = Linux
+NODE_NAME      = tpb4
+RELEASE        = 2.6.32-696.20.1.el6.x86_64
+ARCH           = x86_64
+BYTE_ORDER     = little
+VERSION        = #1 SMP Fri Jan 26 17:51:45 UTC 2018
+PLUTO_DIR      = /home/gamvrelis/PLUTO
+PLUTO_VERSION  = "4.3"
+C_COMPILER     = gcc
+MPI_C_COMPILER = 
