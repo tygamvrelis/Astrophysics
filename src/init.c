@@ -113,6 +113,13 @@ void Init (double *us, double x1, double x2, double x3)
 
 //-----------------------------------------------------------------------------
 
+void InitDomain (Data *d, Grid *grid)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+
 #if BACKGROUND_FIELD == YES
 // Sets initial curl-free magnetic field component
 // Runs after init.
@@ -143,48 +150,100 @@ void BackgroundField (double x1, double x2, double x3, double *B0)
 
 void Analysis (const Data *d, Grid *grid)
 {
-  static bool first = true;
-  if (first)
+  if (prank == 0)
   {
-    first = false;
-
-    int   i, j, k;
-    double  *x1, *x2, *x3;
-
-    x1 = grid[IDIR].xgc;
-    x2 = grid[JDIR].xgc;
-    x3 = grid[KDIR].xgc;
-
-    // Log the background field to a file so that it can be read in an analysis
-    // script
-    char fname[512];
-    FILE *fp;
-    sprintf(fname, "%s/bg_field.dat", RuntimeGet()->output_dir);
-    fp = fopen(fname, "w");
-    double B0[3];
-    DOM_LOOP(k, j, i)
+    static bool first = true;
+    static char fname[512];
+    int i, j, k;
+    FILE* fp = NULL;
+    if (first)
     {
-      BackgroundField (x1[i], x2[j], x3[k], B0);
-      fprintf(fp, "%f %f %f\n", B0[IDIR], B0[JDIR], B0[KDIR]);
-    }
-    fclose(fp);
-    
-    // Log UNIT_* constants
-    sprintf(fname, "%s/unit_constants.dat", RuntimeGet()->output_dir);
-    fp = fopen(fname, "w");
-    fprintf(fp, "UNIT_DENSITY: %.10e\n", UNIT_DENSITY);
-    fprintf(fp, "UNIT_LENGTH: %.10e\n", UNIT_LENGTH);
-    fprintf(fp, "UNIT_VELOCITY: %.10e\n", UNIT_VELOCITY);
-    fclose(fp);
+      first = false;
+      double *x1, *x2, *x3;
+      x1 = grid->xgc[IDIR];
+      x2 = grid->xgc[JDIR];
+      x3 = grid->xgc[KDIR];
 
-    // Log arguments for user parameters
-    sprintf(fname, "%s/user_params.dat", RuntimeGet()->output_dir);
-    fp = fopen(fname, "w");
-    for (i = 0; i < USER_DEF_PARAMETERS; ++i)
-    {
-      fprintf(fp, "%f\n", g_inputParam[i]);
+      // Log the background field to a file so that it can be read in an analysis
+      // script
+      sprintf(fname, "%s/bg_field.dat", RuntimeGet()->output_dir);
+      fp = fopen(fname, "w");
+      double B0[3];
+      DOM_LOOP(k, j, i)
+      {
+        BackgroundField (x1[i], x2[j], x3[k], B0);
+        fprintf(fp, "%f %f %f\n", B0[IDIR], B0[JDIR], B0[KDIR]);
+      }
+      fclose(fp);
+      
+      // Log UNIT_* constants
+      sprintf(fname, "%s/unit_constants.dat", RuntimeGet()->output_dir);
+      fp = fopen(fname, "w");
+      fprintf(fp, "UNIT_DENSITY: %.10e\n", UNIT_DENSITY);
+      fprintf(fp, "UNIT_LENGTH: %.10e\n", UNIT_LENGTH);
+      fprintf(fp, "UNIT_VELOCITY: %.10e\n", UNIT_VELOCITY);
+      fclose(fp);
+
+      // Log arguments for user parameters
+      sprintf(fname, "%s/user_params.dat", RuntimeGet()->output_dir);
+      fp = fopen(fname, "w");
+      for (i = 0; i < USER_DEF_PARAMETERS; ++i)
+      {
+        fprintf(fp, "%f\n", g_inputParam[i]);
+      }
+      fclose(fp);
+
+      // Open up file for ohmic heating
+      sprintf(fname, "%s/heating.dat", RuntimeGet()->output_dir); 
+      fp = fopen(fname, "w");
+      fprintf(fp, "# step time eta|J|^2\n");
+      fclose(fp);
     }
+
+    static long int step = -1;
+    sprintf(fname, "%s/heating.dat", RuntimeGet()->output_dir);
+    // Have to read from the file to see what the last written time was. A
+    // static variable will not work (even with the prank == 0) check because
+    // when PLUTO runs with multiple processes, each will have its own address
+    // space and hence its own static variables.
+    char sline[512];
+    fp = fopen(fname,"r");
+    if (fp == NULL){
+      print ("! Analysis(): file heating.dat not found\n");
+      QUIT_PLUTO(22);
+    }
+    while (fgets(sline, 512, fp));
+    sscanf(sline, "%ld\n", &step);
     fclose(fp);
+    if (g_stepNumber > step && g_stepNumber > 0)
+    {
+      double sum = 0;
+      // If step is less than 1, the eta array will not exist
+      if (g_stepNumber > 0)
+      {
+        // Compute volume integral of eta*|J|^2
+        // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
+        Data_Arr etas = GetStaggeredEta();
+        DOM_LOOP(k,j,i){
+          double dV  = grid->dV[k][j][i];
+          double Jx1 = d->J[IDIR][k][j][i];
+          double Jx2 = d->J[JDIR][k][j][i];
+          double Jx3 = d->J[KDIR][k][j][i];
+          double eta_x1 = etas[IDIR][k][j][i];
+          double eta_x2 = etas[JDIR][k][j][i];
+          double eta_x3 = etas[KDIR][k][j][i];
+          sum += (eta_x1*Jx1*Jx1 + eta_x2*Jx2*Jx2 + eta_x3*Jx3*Jx3) * dV;
+        }
+      }
+
+      fp = fopen(fname, "a");
+      if (fp == NULL){
+        print("! Analysis(): file heating.dat not found\n");
+        QUIT_PLUTO(23);
+      }
+      fprintf(fp, "%ld %f %f\n", g_stepNumber, g_time, sum);
+      fclose(fp);
+    }
   }
 }
 
@@ -196,9 +255,9 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
   double *x1, *x2, *x3;
   double rs;
 
-  x1 = grid[IDIR].xgc;
-  x2 = grid[JDIR].xgc;
-  x3 = grid[KDIR].xgc;
+  x1 = grid->xgc[IDIR];
+  x2 = grid->xgc[JDIR];
+  x3 = grid->xgc[KDIR];
 
   if (side == X1_END)
   {
