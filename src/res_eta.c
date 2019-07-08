@@ -32,14 +32,15 @@ void Resistive_eta(double *v, double x1, double x2, double x3,
 {
 #if defined(RES_INC_WITH_RADIUS)
   // Need to non-dimensionalize eta. Requires the profile to be inputted in
-  // c.g.s. units
-  static const double LV = UNIT_LENGTH * UNIT_VELOCITY;
-  static const double c_sq_over_4_pi = pow(CONST_c, 2) / (4.0 * CONST_PI);
-  static const double eta_coeff = c_sq_over_4_pi / LV;
+  // SI units
+  const double LV = UNIT_LENGTH * UNIT_VELOCITY;
+  const double ten_to_11_over_4_pi = pow(10, 11) / (4.0 * CONST_PI);
+  const double eta_coeff = ten_to_11_over_4_pi / LV;
 
   double r = x1;
-  double sigma = 1.e6 * exp(-r / (0.04 * CONST_Rplanet)) +
-                 1.e-2 * exp((r - CONST_Rplanet) / (0.01 * CONST_Rplanet)); // c.g.s
+  const double R_MAX = g_domEnd[IDIR];
+  double sigma = 1.e6 * exp(-r / (0.04 * R_MAX)) +
+                 1.e-2 * exp((r - R_MAX) / (0.01 * R_MAX)); // SI
   double resistivity = eta_coeff / sigma;
   
   eta[IDIR] = resistivity;

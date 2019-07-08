@@ -176,6 +176,18 @@ void Analysis (const Data *d, Grid *grid)
       }
       fclose(fp);
       
+#if RESISTIVITY != NO
+      sprintf(fname, "%s/eta_field.dat", RuntimeGet()->output_dir);
+      fp = fopen(fname, "w");
+      double eta[3];
+      DOM_LOOP(k, j, i)
+      {
+        Resistive_eta(NULL, x1[i], x2[j], x3[k], NULL, &eta);
+        fprintf(fp, "%f %f %f\n", eta);
+      }
+      fclose(fp);
+#endif
+
       // Log UNIT_* constants
       sprintf(fname, "%s/unit_constants.dat", RuntimeGet()->output_dir);
       fp = fopen(fname, "w");
