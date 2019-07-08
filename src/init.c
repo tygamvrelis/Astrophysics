@@ -183,7 +183,7 @@ void Analysis (const Data *d, Grid *grid)
       DOM_LOOP(k, j, i)
       {
         Resistive_eta(NULL, x1[i], x2[j], x3[k], NULL, &eta);
-        fprintf(fp, "%f %f %f\n", eta);
+        fprintf(fp, "%f %f %f\n", eta[0], eta[1], eta[2]);
       }
       fclose(fp);
 #endif
