@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #PBS -l nodes=1:ppn=8
-#PBS -l walltime=6:00:00
+#PBS -l walltime=12:00:00
 #PBS -r n
 #PBS -j oe
 #PBS -q workq
@@ -11,7 +11,7 @@
 # If you are using nodes=1 and ppn<=8, please use the workq instead
 
 # go to your working directory
-cd /home/gamvrelis/PLUTO/Work/9_mag_dipole_current
+cd /home/gamvrelis/PLUTO/Work/del/resistivity_profile
 
 # Load your modules
 # If you use module purge, make sure to load the maui and torque modules
