@@ -462,7 +462,7 @@ def plot_ohmic_heating_from_pluto(im_mgr, w_dir, fname="heating.dat"):
         plt.close()
 
 # TODO(tyler): vectorize computations. Terrible efficiency at the moment
-def pltSphData3D(d, qty, axes, r=-1, theta=-1, phi=-1, silent=False, f=-1,
+def pltSphData3D(d, qty, axes, r=-1, theta=-1, phi=-1, silent=True, f=-1,
     log=False, v_min=float('inf'), v_max=float('inf'), size=20
 ):
     '''
