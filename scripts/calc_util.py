@@ -2,6 +2,9 @@
 # Author: Tyler
 # Date: July 10, 2019
 
+import numpy as np
+from settings import *
+
 # TODO(tyler): vectorize computations. Terrible efficiency at the moment
 def compute_ohmic_heating(frame, **kwargs):
     """
@@ -97,7 +100,8 @@ def get_physical_b_units(b):
     b : np.ndarray
         Magnetic field in code units
     '''
-    return b * UNIT_VELOCITY * np.sqrt(4 * np.pi * UNIT_DENSITY)
+    
+    return b * settings.UNIT_VELOCITY * np.sqrt(4 * np.pi * settings.UNIT_DENSITY)
 
 def get_physical_eta_units(e):
     '''
@@ -108,7 +112,7 @@ def get_physical_eta_units(e):
     e : np.ndarray
         Resistivity field in code units
     '''
-    return e * UNIT_LENGTH * UNIT_VELOCITY
+    return e * settings.UNIT_LENGTH * settings.UNIT_VELOCITY
 
 def get_eta_code_units(e):
     '''

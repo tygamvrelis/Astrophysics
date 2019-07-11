@@ -6,10 +6,11 @@ import os
 import sys
 import pyPLUTO as pp
 import astropy.constants as const
+from settings import *
 
 def load_user_params(w_dir):
     """
-    Loads user-defined parameters.
+    Loads user-defined parameters into the settings
 
     Parameters
     ----------
@@ -18,14 +19,46 @@ def load_user_params(w_dir):
     """
     print("Loading user params")
     params = []
-    with open(os.path.join(w_dir, "user_params.dat"), "r") as f:
-        for line in f:
-            params.append(float(line))
-    return params
+    try:
+        with open(os.path.join(w_dir, "user_params.dat"), "r") as f:
+            for line in f:
+                params.append(float(line))
+    except IOError:
+        print("No user params found")
+        return
+    
+    user_params = {}
+    user_params['ALPHA']     = None
+    user_params['VMAX']      = None
+    user_params['EXP_DECAY'] = None
+    user_params['TRELAX']    = None
+    user_params['BSURFACE']  = None
+    user_params['ETA']       = None
+    
+    for i in range(len(params)):
+        if i == 0:
+            user_params['ALPHA'] = params[i]
+        elif i == 1:
+            user_params['VMAX'] = params[i]
+        elif i == 2:
+            user_params['EXP_DECAY'] = params[i]
+        elif i == 3:
+            user_params['TRELAX'] = params[i]
+        elif i == 4:
+            user_params['BSURFACE'] = params[i]
+        elif i == 5:
+            user_params['ETA'] = params[i]
+    
+    print("User params:")
+    for k,v in user_params.items():
+        print("\t" + k + ": " + str(v))
+    
+    settings.user_params = user_params
+    return user_params
 
 def load_unit_constants(w_dir):
     """
-    Loads the scaling constants from a file.
+    Loads the scaling constants from a file into the settings
 
     Parameters
     ----------
@@ -64,10 +97,11 @@ def load_unit_constants(w_dir):
     assert(UNIT_DENSITY != sys.maxint and
            UNIT_VELOCITY != sys.maxint and
            UNIT_LENGTH != sys.maxint), "Your unit constants don't make sense!"
-    return UNIT_DENSITY, UNIT_VELOCITY, UNIT_LENGTH
-
-def get_unit_constants():
     
+    settings.UNIT_DENSITY = UNIT_DENSITY
+    settings.UNIT_VELOCITY = UNIT_VELOCITY
+    settings.UNIT_LENGTH = UNIT_LENGTH
+    return UNIT_DENSITY, UNIT_VELOCITY, UNIT_LENGTH
 
 def load_pluto_dataframes(w_dir):
     """
