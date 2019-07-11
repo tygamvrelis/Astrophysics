@@ -397,7 +397,7 @@ def plot_ohmic_heating_from_python(data, im_mgr, **kwargs):
     I_set = []
     for frame in data[1:]:
         t.append(frame.SimTime)
-        I = compute_ohmic_heating(frame, kwargs)
+        I = compute_ohmic_heating(frame, **kwargs)
         I_set.append(I)
 
     try:
@@ -407,6 +407,7 @@ def plot_ohmic_heating_from_python(data, im_mgr, **kwargs):
         plt.xlabel('Time')
         plt.ylabel('Integral of $\eta|J|^2$ (code units)')
         fname = "ohmic_heating_vs_t_python"
+        const_eta = 'eta_const' in kwargs
         if const_eta:
             fname += "_eta_const"
         else:
@@ -418,7 +419,7 @@ def plot_ohmic_heating_from_python(data, im_mgr, **kwargs):
         print(e)
         plt.close()
 
-def plot_ohmic_heating_from_pluto(im_mgr, fname="heating.dat"):
+def plot_ohmic_heating_from_pluto(im_mgr, w_dir, fname="heating.dat"):
     """
     Loads ohmic heating data outputted by PLUTO and plots it
 
@@ -426,6 +427,8 @@ def plot_ohmic_heating_from_pluto(im_mgr, fname="heating.dat"):
     ----------
     im_mgr : image_set_manager
         Manages image collection for animation
+    w_dir : str
+        The location where the file is to be loaded from
     fname : str
         Name of file to load ohmic heating data from
     """
@@ -435,7 +438,7 @@ def plot_ohmic_heating_from_pluto(im_mgr, fname="heating.dat"):
     HEATING_IDX = 2
     try:
         print("Attempting to load {0}".format(fname))
-        with open(os.path.join(wdir, fname), "r") as f:
+        with open(os.path.join(w_dir, fname), "r") as f:
             f.next() # Skip first line since it's just labels for the data
             for line in f:
                 step_time_heating = line.split(" ")

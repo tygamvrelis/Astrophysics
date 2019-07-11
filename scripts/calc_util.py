@@ -3,7 +3,7 @@
 # Date: July 10, 2019
 
 import numpy as np
-import astropy.constants as const
+from field_util import get_field_qty
 from settings import *
 
 # TODO(tyler): vectorize computations. Terrible efficiency at the moment
@@ -21,8 +21,10 @@ def compute_ohmic_heating(frame, **kwargs):
     eta_const : double
         Constant resistivity value. Must be in code units
     """
-    assert('eta_field' in kwargs or 'eta_const' in kwargs), "Must specify either eta_field or eta_const"
-    assert(not ('eta_field' in kwargs and 'eta_const' in kwargs)), "You must pass in only ONE of eta_field or eta_const"
+    assert('eta_field' in kwargs or 'eta_const' in kwargs), \
+        "Must specify either eta_field or eta_const"
+    assert(not ('eta_field' in kwargs and 'eta_const' in kwargs)), \
+        "You must pass in only ONE of eta_field or eta_const"
     
     const_eta = 'eta_const' in kwargs
     if not const_eta:
@@ -39,9 +41,9 @@ def compute_ohmic_heating(frame, **kwargs):
     j_r     = get_field_qty('j_r', frame)
     j_theta = get_field_qty('j_theta', frame)
     j_phi   = get_field_qty('j_phi', frame)
-    r_tot = data[0].n1_tot
-    theta_tot = data[0].n2_tot
-    phi_tot = data[0].n3_tot
+    r_tot = frame.n1_tot
+    theta_tot = frame.n2_tot
+    phi_tot = frame.n3_tot
     I = 0
     for i in range(r_tot - 1):
         dVr = np.abs(r[i + 1]**3 - r[i]**3) / 3.0
@@ -89,61 +91,3 @@ def sph2cart(r, theta, phi):
     y = r * np.sin(theta) * np.sin(phi)
     z = r * np.cos(theta)
     return x, y, z
-
-# TODO (tyler): use astropy.units for conversions as much as possible
-def get_physical_b_units(b):
-    '''
-    Converts magnetic field from code units to Gauss as per section 5.1.1 in the
-    PLUTO user manual
-
-    Parameters
-    ----------
-    b : np.ndarray
-        Magnetic field in code units
-    '''
-    
-    return b * settings.UNIT_VELOCITY * np.sqrt(4 * np.pi * settings.UNIT_DENSITY)
-
-def get_physical_eta_units(e):
-    '''
-    Converts resistivity from code units to cgs units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in code units
-    '''
-    return e * settings.UNIT_LENGTH * settings.UNIT_VELOCITY
-
-def get_eta_code_units(e):
-    '''
-    Converts resistivity from cgs units to code units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in cgs units
-    '''
-    return e / get_physical_eta_units(1)
-
-def eta_cgs_to_si(e):
-    '''
-    Converts resistivity from cgs units to SI units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in cgs units
-    '''
-    return e * 10**11 / const.c.to('cm/s').value**2
-
-def eta_si_to_cgs(e):
-    '''
-    Converts resistivity from SI units to cgs units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in SI units
-    '''
-    return e / eta_cgs_to_si(1)

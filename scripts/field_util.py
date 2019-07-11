@@ -3,8 +3,8 @@
 # Date: July 10, 2019
 
 import numpy as np
+import astropy.constants as const
 from load_util import load_vector_field_3d
-from calc_util import get_physical_b_units, get_physical_eta_units, eta_cgs_to_si
 from settings import *
 
 def get_field_qty(field, df=None, bg_field=True):
@@ -199,3 +199,61 @@ class MagField:
         Multiplication by scalar
         """
         return MagField(self.Bx1 * other, self.Bx2 * other, self.Bx3 * other)
+
+# TODO (tyler): use astropy.units for conversions as much as possible
+def get_physical_b_units(b):
+    '''
+    Converts magnetic field from code units to Gauss as per section 5.1.1 in the
+    PLUTO user manual
+
+    Parameters
+    ----------
+    b : np.ndarray
+        Magnetic field in code units
+    '''
+    
+    return b * settings.UNIT_VELOCITY * np.sqrt(4 * np.pi * settings.UNIT_DENSITY)
+
+def get_physical_eta_units(e):
+    '''
+    Converts resistivity from code units to cgs units
+
+    Parameters
+    ----------
+    e : np.ndarray
+        Resistivity field in code units
+    '''
+    return e * settings.UNIT_LENGTH * settings.UNIT_VELOCITY
+
+def get_eta_code_units(e):
+    '''
+    Converts resistivity from cgs units to code units
+
+    Parameters
+    ----------
+    e : np.ndarray
+        Resistivity field in cgs units
+    '''
+    return e / get_physical_eta_units(1)
+
+def eta_cgs_to_si(e):
+    '''
+    Converts resistivity from cgs units to SI units
+
+    Parameters
+    ----------
+    e : np.ndarray
+        Resistivity field in cgs units
+    '''
+    return e * 10**11 / const.c.to('cm/s').value**2
+
+def eta_si_to_cgs(e):
+    '''
+    Converts resistivity from SI units to cgs units
+
+    Parameters
+    ----------
+    e : np.ndarray
+        Resistivity field in SI units
+    '''
+    return e / eta_cgs_to_si(1)
