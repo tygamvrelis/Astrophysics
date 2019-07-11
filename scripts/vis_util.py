@@ -47,7 +47,7 @@ class image_set_manager:
         if del_frames:
             for filename in self.__im_set:
                 os.remove(os.path.join(self.__wdir, filename))
-        clear_set()
+        self.clear_set()
         
     def clear_set(self):
         """
@@ -70,6 +70,7 @@ def set_image_defaults():
 
 def plot_2d(
     data,
+    im_mgr,
     const_elevation=False,
     theta=90,
     const_azimuth=False,
@@ -89,6 +90,8 @@ def plot_2d(
     ----------
     data : list of pyPLUTO.pload
         List of data frames
+    im_mgr : image_set_manager
+        Manages image collection for animation
     const_elevation : bool
         If True, plots the density as a function of radius and elevation
         Exclusive to const_azimuth
@@ -121,7 +124,6 @@ def plot_2d(
     v_max : float
         Specifies what the colorbar's max color should be
     """
-    
     if const_elevation == False and const_azimuth == False:
         const_elevation = True
     
@@ -132,20 +134,22 @@ def plot_2d(
     plot_b = field == 'b_phi' or field == 'b_r' or field == 'b_theta'
     plot_j = field == 'j_phi' or field == 'j_r' or field == 'j_theta'
     plot_eta = field == 'eta_phi' or field == 'eta_r' or field == 'eta_theta'
-    assert(field == '' or field == 'rho' or plot_v or plot_b or plot_j or plot_eta), "field argument is invalid"
-    assert(const_elevation != True or const_azimuth != True), "EITHER the azimuth or elevation may be specified, not both"
-    assert(not (field == '' and log == True)), "Cannot do log plot if no field quantity is specified"
-    assert(data_idx <= len(dh)), "data_idx must be <= len(dh)"
     is_scalar_field = field == 'rho'
-    assert(not (is_scalar_field and arrows)), "Cannot plot arrows for scalar field {0}".format(field)
+    assert(field == '' or field == 'rho' or plot_v or plot_b or plot_j or plot_eta), \
+        "field argument is invalid"
+    assert(const_elevation != True or const_azimuth != True), \
+        "EITHER the azimuth or elevation may be specified, not both"
+    assert(not (field == '' and log == True)), "Cannot do log plot if no field quantity is specified"
+    assert(data_idx <= len(data)), "data_idx must be <= len(data)"
+    assert(not (is_scalar_field and arrows)), \
+        "Cannot plot arrows for scalar field {0}".format(field)
     
-    single_only = (data_idx != -1)
+    single_only = data_idx != -1
     nframes = len(data)
     nrows   = 1 if single_only else np.round(np.sqrt(nframes))
     ncols   = 1 if single_only else np.round(np.sqrt(nframes) + 1)
-    theta_idx = (np.abs(dh[0].x2 - theta * np.pi / 180)).argmin()
-    phi_idx   = (np.abs(dh[0].x3 - phi * np.pi / 180)).argmin()
-    
+    theta_idx = (np.abs(data[0].x2 - theta * np.pi / 180)).argmin()
+    phi_idx   = (np.abs(data[0].x3 - phi * np.pi / 180)).argmin()
     try:
         fig = plt.figure()
         for idx in range(nframes):
@@ -213,7 +217,7 @@ def plot_2d(
                     plt.colorbar()
             if arrows:
                 plt.quiver(X, Y, U, V)
-            annotations[0] = annotations[0] +  ' (time: ' + str(np.round(data[idx].SimTime, 2)) + ')'
+            annotations[0] = annotations[0] + ' (time: ' + str(np.round(data[idx].SimTime, 2)) + ')'
             plt.title(annotations[0])
             plt.xlabel(annotations[1])
             if single_only or idx % ncols == 0:
@@ -234,12 +238,12 @@ def plot_2d(
         if bg_field and plot_b:
             fname = fname + "_bgfield"
         if not single_only:
-            save_plt(fname, track=False)
+            im_mgr.save_plt(fname, track=False)
         else:
             fname = fname + "_t" + str(np.round(data[idx].SimTime, 5))
-            save_plt(fname)
+            im_mgr.save_plt(fname)
         plt.close()
-    except:
+    except Exception as e:
         print(e)
         plt.close()
 
@@ -261,7 +265,6 @@ def subplot_radius_vs_eta_2d(data, theta, phi, log=False):
     log : bool
         (Optional) Plots the logarithm of the density (base 10)
     """
-    
     theta_idx = (np.abs(data[0].x2 - theta * np.pi / 180)).argmin()
     phi_idx = (np.abs(data[0].x3 - phi * np.pi / 180)).argmin()
     
@@ -283,7 +286,7 @@ def subplot_radius_vs_eta_2d(data, theta, phi, log=False):
             plt.ylabel('Log 10 Resistivity [S/m]')
         else:
             plt.ylabel('Resistivity (SI units)')
-    except:
+    except Exception as e:
         print(e)
         plt.close()
 
@@ -329,7 +332,7 @@ def subplot_radius_vs_density_2d(data, theta, phi, log=False, first_only=False):
         else:
             plt.ylabel('Density')
 
-def plot_extrema_over_time(data, field, bg_field=False):
+def plot_extrema_over_time(data, im_mgr, field, bg_field=False):
     """
     Plots the min and max values for the specified field quantity, for each time
     step
@@ -338,6 +341,8 @@ def plot_extrema_over_time(data, field, bg_field=False):
     ----------
     data : pyPLUTO.pload
         PLUTO data frame
+    im_mgr : image_set_manager
+        Manages image collection for animation
     field : str
         Name of field
     bg_field : bool
@@ -362,13 +367,14 @@ def plot_extrema_over_time(data, field, bg_field=False):
         fname = field + "_extrema_vs_t"
         if bg_field:
             fname = fname + "_bgfield"
-        save_plt(fname)
+        im_mgr.save_plt(fname)
+        print("Saved plot as " + fname)
         plt.close();
-    except:
+    except Exception as e:
         print(e)
         plt.close()
 
-def plot_ohmic_heating_from_python(data, **kwargs):
+def plot_ohmic_heating_from_python(data, im_mgr, **kwargs):
     """
     Computes ohmic heating values for each time step directly from the data sets
     and plots it
@@ -378,6 +384,8 @@ def plot_ohmic_heating_from_python(data, **kwargs):
     data : np.ndarray
         Data frames to get the coordinate axes and current values from. Must be
         in code units
+    im_mgr : image_set_manager
+        Manages image collection for animation
     eta_field : np.ndarray
         Resistivity field array. MUST BE IN CODE UNITS!!
     eta_const : double
@@ -404,19 +412,21 @@ def plot_ohmic_heating_from_python(data, **kwargs):
             fname += "_eta_const"
         else:
             fname += "_eta_field"
-        save_plt(fname)
+        im_mgr.save_plt(fname)
         print("Saved plot as " + fname)
         plt.close()
     except Exception as e:
         print(e)
         plt.close()
 
-def plot_ohmic_heating_from_pluto(fname="heating.dat"):
+def plot_ohmic_heating_from_pluto(im_mgr, fname="heating.dat"):
     """
     Loads ohmic heating data outputted by PLUTO and plots it
 
     Parameters
     ----------
+    im_mgr : image_set_manager
+        Manages image collection for animation
     fname : str
         Name of file to load ohmic heating data from
     """
@@ -432,7 +442,7 @@ def plot_ohmic_heating_from_pluto(fname="heating.dat"):
                 step_time_heating = line.split(" ")
                 t.append(float(step_time_heating[TIME_IDX]))
                 h.append(float(step_time_heating[HEATING_IDX]))
-    except:
+    except Exception as e:
         print(e)
         print("An exception occurred while reading heating.dat. Are you sure"
               " the file exists?")
@@ -442,10 +452,10 @@ def plot_ohmic_heating_from_pluto(fname="heating.dat"):
         plt.title('Ohmic heating vs time')
         plt.xlabel('Time')
         plt.ylabel('Integral of $\eta|J|^2$ (code units)')
-        save_plt("ohmic_heating_vs_t_PLUTO")
+        im_mgr.save_plt("ohmic_heating_vs_t_PLUTO")
         plt.close();
         print("Plotting complete")
-    except:
+    except Exception as e:
         print(e)
         plt.close()
 

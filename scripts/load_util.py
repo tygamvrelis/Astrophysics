@@ -5,7 +5,7 @@
 import os
 import sys
 import pyPLUTO as pp
-import astropy.constants as const
+import numpy as np
 from settings import *
 
 def load_user_params(w_dir):
@@ -80,7 +80,7 @@ def load_unit_constants(w_dir):
                     UNIT_VELOCITY = float(l[1])
                 elif l[0].startswith("UNIT_LENGTH"):
                     UNIT_LENGTH = float(l[1])
-    except IOError:
+    except IOError as e:
         print(e)
         print("WARNING: Using default unit constants (not loaded from run)")
         UNIT_DENSITY  = 1.0e-9
@@ -118,3 +118,51 @@ def load_pluto_dataframes(w_dir):
         d = pp.pload(i, w_dir)
         data.append(d)
     return data
+
+def load_vector_field_3d(ref_frame, w_dir, fname="eta_field.dat"):
+    """
+    Loads a vector field from a file into a numpy array. Order of iteration is
+    k-dir, j-dir, i-dir, and each line contains the field components in order
+    i-j-k.
+
+    Parameters
+    ----------
+    ref_frame : pyPLUTO.pload
+        Reference data frame, used for getting coordinates etc.
+    w_dir : str
+        The location where the file is to be loaded from
+    fname : str
+        The name of the file to load the resistivity field from
+    """
+    r_tot     = ref_frame.n1_tot
+    theta_tot = ref_frame.n2_tot
+    phi_tot   = ref_frame.n3_tot
+    try:
+        with open(os.path.join(w_dir, fname), "r") as f:
+            data = f.readlines()
+    except Exception as e:
+        print(e)
+        return
+    expected_num_lines = r_tot * theta_tot * phi_tot
+    assert(len(data) == expected_num_lines), (
+        "Error reading {0} (got {1} lines, expected {2})".format(
+            fname, len(data), expected_num_lines
+        )
+    )
+    fx1 = np.zeros((r_tot, theta_tot, phi_tot))
+    fx2 = np.zeros((r_tot, theta_tot, phi_tot))
+    fx3 = np.zeros((r_tot, theta_tot, phi_tot))
+    for k in range(phi_tot):
+        for j in range(theta_tot):
+            for i in range(r_tot):
+                idx = k * theta_tot * r_tot + j * r_tot + i
+                fijk = data[idx].split(" ")
+                fijk = [float(e) for e in fijk]
+                assert(len(fijk) == 3), \
+                    "Wrong number of field components (i,j,k)=({0},{1},{2})".format(
+                        i, j, k
+                    )
+                fx1[i,j,k] = fijk[0]
+                fx2[i,j,k] = fijk[1]
+                fx3[i,j,k] = fijk[2]
+    return fx1, fx2, fx3

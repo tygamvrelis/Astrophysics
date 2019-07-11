@@ -3,6 +3,8 @@
 # Date: July 10, 2019
 
 import numpy
+from load_util import load_vector_field_3d
+from calc_util import get_physical_b_units, get_physical_eta_units, eta_cgs_to_si
 
 def get_field_qty(field, df, bg_field=True):
     """
@@ -71,13 +73,14 @@ def get_field_qty(field, df, bg_field=True):
             qty = eta.ex3
     return qty;
 
-# TODO (tyler): make EtaField and MagField derive from a common vector field class
-# TODO (tyler): create a load_vector_field function in load_util and call it here
 class EtaField:
-    def __init__(self, _ex1=0, _ex2=0, _ex3=0):
-        self.ex1 = _ex1
-        self.ex2 = _ex2
-        self.ex3 = _ex3
+    """
+    Resistivity field (vector)
+    """
+    def __init__(self, fx1=0, fx2=0, fx3=0):
+        self.ex1 = fx1
+        self.ex2 = fx2
+        self.ex3 = fx3
 
     def load_field(self, ref_frame, w_dir, fname="eta_field.dat"):
         """
@@ -95,29 +98,10 @@ class EtaField:
         fname : str
             The name of the file to load the resistivity field from
         """
-        r_tot     = ref_frame.n1_tot
-        theta_tot = ref_frame.n2_tot
-        phi_tot   = ref_frame.n3_tot
-        with open(os.path.join(w_dir, fname), "r") as f:
-            data = f.readlines()
-        expected_num_lines = r_tot * theta_tot * phi_tot
-        assert(len(data) == expected_num_lines), "Error reading {0} (got {1} lines, expected {2})".format(fname, len(data), expected_num_lines)
-        self.ex1 = np.zeros((r_tot, theta_tot, phi_tot))
-        self.ex2 = np.zeros((r_tot, theta_tot, phi_tot))
-        self.ex3 = np.zeros((r_tot, theta_tot, phi_tot))
-        for k in range(phi_tot):
-            for j in range(theta_tot):
-                for i in range(r_tot):
-                    idx = k * theta_tot * r_tot + j * r_tot + i
-                    etaijk = data[idx].split(" ")
-                    etaijk = [float(e) for e in etaijk]
-                    assert(len(etaijk) == 3), "Wrong number of field components"
-                    self.ex1[i,j,k] = etaijk[0]
-                    self.ex2[i,j,k] = etaijk[1]
-                    self.ex3[i,j,k] = etaijk[2]
-        self.ex1 = eta_cgs_to_si(get_physical_eta_units(self.ex1))
-        self.ex2 = eta_cgs_to_si(get_physical_eta_units(self.ex2))
-        self.ex3 = eta_cgs_to_si(get_physical_eta_units(self.ex3))
+        ex1, ex2, ex3 = load_vector_field_3d(ref_frame, w_dir, fname)
+        self.ex1 = eta_cgs_to_si(get_physical_eta_units(ex1))
+        self.ex2 = eta_cgs_to_si(get_physical_eta_units(ex2))
+        self.ex3 = eta_cgs_to_si(get_physical_eta_units(ex3))
         
     def __truediv__(self, other):
         """
@@ -138,10 +122,13 @@ class EtaField:
         return EtaField(self.ex1 * other, self.ex2 * other, self.ex3 * other)
 
 class MagField:
-    def __init__(self):
-        self.Bx1 = 0
-        self.Bx2 = 0
-        self.Bx3 = 0
+    """
+    Magnetic field (vector)
+    """
+    def __init__(self, fx1=0, fx2=0, fx3=0):
+        self.Bx1 = fx1
+        self.Bx2 = fx2
+        self.Bx3 = fx3
         
     def init_dipole_field(self, ref_frame, B_surface):
         """
@@ -175,7 +162,7 @@ class MagField:
         Loads the background field from a file. Order of iteration is k-dir, j-dir,
         i-dir, and each line contains the field components in order i-j-k.
         
-        Also converts to physical units (c.g.s.) from code units.
+        Also converts to physical units (cgs) from code units.
 
         Parameters
         ----------
@@ -186,26 +173,25 @@ class MagField:
         fname : str
             The name of the file to load the background field from
         """
-        r_tot     = ref_frame.n1_tot
-        theta_tot = ref_frame.n2_tot
-        phi_tot   = ref_frame.n3_tot
-        with open(os.path.join(w_dir, fname), "r") as f:
-            data = f.readlines()
-        expected_num_lines = r_tot * theta_tot * phi_tot
-        assert(len(data) == expected_num_lines), "Error reading {0} (got {1} lines, expected {2})".format(fname, len(data), expected_num_lines)
-        self.Bx1 = np.zeros_like(ref_frame.Bx1)
-        self.Bx2 = np.zeros_like(ref_frame.Bx2)
-        self.Bx3 = np.zeros_like(ref_frame.Bx3)
-        for k in range(phi_tot):
-            for j in range(theta_tot):
-                for i in range(r_tot):
-                    idx = k * theta_tot * r_tot + j * r_tot + i
-                    B0ijk = data[idx].split(" ")
-                    B0ijk = [float(e) for e in B0ijk]
-                    assert(len(B0ijk) == 3), "Wrong number of field components"
-                    self.Bx1[i,j,k] = B0ijk[0]
-                    self.Bx2[i,j,k] = B0ijk[1]
-                    self.Bx3[i,j,k] = B0ijk[2]
-        self.Bx1 = get_physical_b_units(self.Bx1)
-        self.Bx2 = get_physical_b_units(self.Bx2)
-        self.Bx3 = get_physical_b_units(self.Bx3)
+        Bx1, Bx2, Bx3 = load_vector_field_3d(ref_frame, w_dir, fname)
+        self.Bx1 = get_physical_b_units(Bx1)
+        self.Bx2 = get_physical_b_units(Bx2)
+        self.Bx3 = get_physical_b_units(Bx3)
+
+    def __truediv__(self, other):
+        """
+        Division by scalar
+        """
+        return MagField(self.Bx1 / other, self.Bx2 / other, self.Bx3 / other)
+
+    def __div__(self, other):
+        """
+        Division by scalar
+        """
+        return MagField(self.Bx1 / other, self.Bx2 / other, self.Bx3 / other)
+
+    def __mul__(self, other):
+        """
+        Multiplication by scalar
+        """
+        return MagField(self.Bx1 * other, self.Bx2 * other, self.Bx3 * other)

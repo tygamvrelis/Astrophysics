@@ -3,6 +3,7 @@
 # Date: July 10, 2019
 
 import numpy as np
+import astropy.constants as const
 from settings import *
 
 # TODO(tyler): vectorize computations. Terrible efficiency at the moment
