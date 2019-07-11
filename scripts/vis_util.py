@@ -276,10 +276,9 @@ def subplot_radius_vs_eta_2d(data, theta, phi, log=False):
         qty = get_field_qty("eta_r")[:, theta_idx, phi_idx] # TODO (tyler): add way to specify which component...
         if log:
             qty = np.log10(qty)
-        plt.scatter(data[idx].x1, qty)
-        plt.title('Time: ' + str(np.round(data[idx].SimTime, 2)) +
-                ' (theta = ' + str(np.round(data[idx].x2[theta_idx] * 180 / np.pi, decimals=1)) +
-                ', phi = ' + str(np.round(data[idx].x3[phi_idx] * 180 / np.pi, decimals=1)) + ')'
+        plt.scatter(data[0].x1, qty)
+        plt.title('theta = ' + str(np.round(data[0].x2[theta_idx] * 180 / np.pi, decimals=1)) +
+                 ', phi = ' + str(np.round(data[0].x3[phi_idx] * 180 / np.pi, decimals=1))
         )
         plt.xlabel('X1 (radius)')
         if log:
