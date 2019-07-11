@@ -273,7 +273,7 @@ def subplot_radius_vs_eta_2d(data, theta, phi, log=False):
     try:
         fig = plt.figure()
         plt.subplot(1, 1, 1)
-        qty = eta.ex1[:, theta_idx, phi_idx] # TODO (tyler): add way to specify which component...
+        qty = get_field_qty("eta_r")[:, theta_idx, phi_idx] # TODO (tyler): add way to specify which component...
         if log:
             qty = np.log10(qty)
         plt.scatter(data[idx].x1, qty)

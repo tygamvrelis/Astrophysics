@@ -2,11 +2,12 @@
 # Author: Tyler
 # Date: July 10, 2019
 
-import numpy
+import numpy as np
 from load_util import load_vector_field_3d
 from calc_util import get_physical_b_units, get_physical_eta_units, eta_cgs_to_si
+from settings import *
 
-def get_field_qty(field, df, bg_field=True):
+def get_field_qty(field, df=None, bg_field=True):
     """
     Wrapper for retrieving field quantities from a PLUTO data frame
 
@@ -23,7 +24,10 @@ def get_field_qty(field, df, bg_field=True):
     plot_b = field == 'b_phi' or field == 'b_r' or field == 'b_theta'
     plot_j = field == 'j_phi' or field == 'j_r' or field == 'j_theta'
     plot_eta = field == 'eta_phi' or field == 'eta_r' or field == 'eta_theta'
-    assert(field == 'rho' or plot_v or plot_b or plot_j or plot_eta), "field argument is invalid"
+    assert(field == 'rho' or plot_v or plot_b or plot_j or plot_eta), \
+        "field argument is invalid"
+    assert(not (df == None and (plot_v or plot_b or plot_j))), \
+        "Must specify data frame"
     
     # Find the field quantity
     if field == 'rho':
@@ -39,15 +43,15 @@ def get_field_qty(field, df, bg_field=True):
         if field == 'b_r':
             qty = df.Bx1
             if bg_field:
-                qty = np.copy(qty) + B0.Bx1
+                qty = np.copy(qty) + settings.B0.Bx1
         elif field == 'b_theta':
             qty = df.Bx2
             if bg_field:
-                qty = np.copy(qty) + B0.Bx2
+                qty = np.copy(qty) + settings.B0.Bx2
         elif field == 'b_phi':
             qty = df.Bx3
             if bg_field:
-                qty = np.copy(qty) + B0.Bx3
+                qty = np.copy(qty) + settings.B0.Bx3
     elif plot_j:
         # Accept both conventions since this has changed over time
         try:
@@ -66,11 +70,11 @@ def get_field_qty(field, df, bg_field=True):
                 qty = df.jx3
     elif plot_eta:
         if field == 'eta_r':
-            qty = eta.ex1
+            qty = settings.eta.ex1
         elif field == 'eta_theta':
-            qty = eta.ex2
+            qty = settings.eta.ex2
         elif field == 'eta_phi':
-            qty = eta.ex3
+            qty = settings.eta.ex3
     return qty;
 
 class EtaField:

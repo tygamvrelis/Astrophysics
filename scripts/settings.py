@@ -11,6 +11,8 @@ class Settings(object):
         self.__V_first = True
         self.__L_first = True
         self.__user_params_first = True
+        self.__B0_first = True
+        self.__eta_first = True
     
     @property
     def UNIT_DENSITY(self):
@@ -63,5 +65,29 @@ class Settings(object):
         else:
             self.__user_params_first = False
         self.__user_params = params
+
+    @property
+    def B0(self):
+        return self.__B0
+    
+    @B0.setter
+    def B0(self, field):
+        if not self.__B0_first and field != self.__B0:
+            print("WARNING: Overwriting B0!")
+        else:
+            self.__B0_first = False
+        self.__B0 = field
+
+    @property
+    def eta(self):
+        return self.__eta
+    
+    @eta.setter
+    def eta(self, field):
+        if not self.__eta_first and field != self.__eta:
+            print("WARNING: Overwriting eta!")
+        else:
+            self.__eta_first = False
+        self.__eta = field
 
 settings = Settings()
