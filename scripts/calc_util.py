@@ -52,7 +52,7 @@ def compute_ohmic_heating(frame, **kwargs):
             for k in range(phi_tot - 1):
                 # Volume element. Partially calculated before to reduce number
                 # of repeated calculations
-                d_phi = phi[k + 1] - phi[k]
+                d_phi = np.abs(phi[k + 1] - phi[k])
                 vol = dVr * dmu * d_phi # Volume element formula from PLUTO
 
                 # Field quantity, choosing middle point in the spherical wedge

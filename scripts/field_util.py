@@ -4,8 +4,32 @@
 
 import numpy as np
 import astropy.constants as const
+import astropy.units as u
 from load_util import load_vector_field_3d
 from settings import *
+
+# TODO (tyler): use astropy.units for conversions as much as possible
+def eta_cgs_to_si(e):
+    '''
+    Converts resistivity from cgs units to SI units
+
+    Parameters
+    ----------
+    e : np.ndarray
+        Resistivity field in cgs units
+    '''
+    return (e * 10**11 / const.c.to('cm/s')**2).value * u.S / u.m
+
+def eta_si_to_cgs(e):
+    '''
+    Converts resistivity from SI units to cgs units
+
+    Parameters
+    ----------
+    e : np.ndarray
+        Resistivity field in SI units
+    '''
+    return (e / eta_cgs_to_si(1)).value * u.cm**2 / u.s
 
 def get_field_qty(field, df=None, bg_field=True):
     """
@@ -77,6 +101,96 @@ def get_field_qty(field, df=None, bg_field=True):
             qty = settings.eta.ex3
     return qty;
 
+def get_field_units(field):
+    """
+    Wrapper for retrieving field quantity units in cgs.
+    
+    Returns a tuple whose first element indicates whether or not the field
+    argument has a corresponding unit (True), and if True, returns the unit as
+    the second element
+
+    Parameters
+    ----------
+    field : str
+        Name of field
+    """
+    get_v = field == 'v_phi' or field == 'v_r' or field == 'v_theta'
+    get_b = field == 'b_phi' or field == 'b_r' or field == 'b_theta'
+    get_j = field == 'j_phi' or field == 'j_r' or field == 'j_theta'
+    get_eta = field == 'eta_phi' or field == 'eta_r' or field == 'eta_theta'
+    if not (field == 'rho' or get_v or get_b or get_j or get_eta):
+        return False, u.dimensionless_unscaled
+    
+    # Find the field quantity
+    if field == 'rho':
+        units = u.g / u.cm**3
+    elif get_v:
+        units = u.cm / u.s
+    elif get_b:
+        units = u.cm**(-1/2) * u.g * u.s**(-1)
+    elif get_j:
+        units = u.g**(1/2) * u.cm**(-3/2) * u.s**(-1)
+    elif get_eta:
+        units = u.cm**2 / u.s
+    return True, units
+
+def get_scaling_factor(field):
+    """
+    Gets a scaling factor that, when multiplied with the field quantity in
+    dimensionless units, yields the field quantity in cgs units
+
+    Returns a tuple whose first element indicates whether or not the field
+    argument requires scaling to cgs (True), and if True, returns the scaling
+    factor as the second element
+    
+    Parameters
+    ----------
+    field : str
+        Name of field
+    """
+    get_v = field == 'v_phi' or field == 'v_r' or field == 'v_theta'
+    get_b = field == 'b_phi' or field == 'b_r' or field == 'b_theta'
+    get_j = field == 'j_phi' or field == 'j_r' or field == 'j_theta'
+    get_eta = field == 'eta_phi' or field == 'eta_r' or field == 'eta_theta'
+    get_time = field == 'SimTime' # TODO (tyler): check this...
+    if not (field == 'rho' or get_v or get_b or get_j or get_eta or get_time):
+        return False, 1.0
+    
+    # Find the field quantity
+    if field == 'rho':
+        factor = settings.UNIT_DENSITY
+    elif get_v:
+        factor = settings.UNIT_VELOCITY
+    elif get_time:
+        factor = settings.UNIT_TIME
+    elif get_b:
+        # Converts magnetic field from code units to cgs units (Gauss) as per
+        # section 5.1.1 in the PLUTO user manual
+        factor = settings.UNIT_VELOCITY * np.sqrt(4 * np.pi * settings.UNIT_DENSITY)
+    elif get_j:
+        # Converts current from code units to cgs units
+        factor = settings.UNIT_DENSITY**(1/2) / settings.UNIT_TIME
+    elif get_eta:
+        # Converts resistivity from code units to cgs units
+        factor = settings.UNIT_LENGTH * settings.UNIT_VELOCITY
+    return True, factor
+
+def convert_pluto_dataframes_to_cgs(data):
+    """
+    Scales the quantities in the dataframes to cgs and attaches units
+    """
+    for frame in data:
+        for kv in frame.__dict__.items():
+            # 1. Scale
+            needs_scaling, scaling_factor = get_scaling_factor(kv[0])
+            if needs_scaling:
+                kv[1] *= scaling_factor
+            
+            # 2. Add units to all quantities
+            has_units, units = get_field_units(kv[0])
+            if has_units:
+                kv[1] *= units
+
 class EtaField:
     """
     Resistivity field (vector)
@@ -136,14 +250,14 @@ class MagField:
         
     def init_dipole_field(self, ref_frame, B_surface):
         """
-        Generates a dipole field with the specified surface value.
+        Generates a dipole field with the specified surface value in Gauss
 
         Parameters
         ----------
         ref_frame : pyPLUTO.pload
             Reference data frame, used for getting coordinates etc.
         B_surface : double
-            Value of B field at the edge of the atmosphere
+            Value of B field at the edge of the atmosphere, in Gauss
         """
         self.Bx1 = np.zeros_like(ref_frame.Bx1)
         self.Bx2 = np.zeros_like(ref_frame.Bx2)
@@ -160,6 +274,10 @@ class MagField:
                 for k in range(phi_tot):
                     self.Bx1[i,j,k] = bg_Bx1
                     self.Bx2[i,j,k] = bg_Bx2
+        # Gauss
+        self.Bx1 *= get_field_units('b_r')
+        self.Bx2 *= get_field_units('b_theta')
+        self.Bx3 *= get_field_units('b_phi')
     
     def load_field(self, ref_frame, w_dir, fname="bg_field.dat"):
         """
@@ -178,9 +296,9 @@ class MagField:
             The name of the file to load the background field from
         """
         Bx1, Bx2, Bx3 = load_vector_field_3d(ref_frame, w_dir, fname)
-        self.Bx1 = get_physical_b_units(Bx1)
-        self.Bx2 = get_physical_b_units(Bx2)
-        self.Bx3 = get_physical_b_units(Bx3)
+        self.Bx1 = b_code_units_to_cgs(Bx1)
+        self.Bx2 = b_code_units_to_cgs(Bx2)
+        self.Bx3 = b_code_units_to_cgs(Bx3)
 
     def __truediv__(self, other):
         """
@@ -199,61 +317,3 @@ class MagField:
         Multiplication by scalar
         """
         return MagField(self.Bx1 * other, self.Bx2 * other, self.Bx3 * other)
-
-# TODO (tyler): use astropy.units for conversions as much as possible
-def get_physical_b_units(b):
-    '''
-    Converts magnetic field from code units to Gauss as per section 5.1.1 in the
-    PLUTO user manual
-
-    Parameters
-    ----------
-    b : np.ndarray
-        Magnetic field in code units
-    '''
-    
-    return b * settings.UNIT_VELOCITY * np.sqrt(4 * np.pi * settings.UNIT_DENSITY)
-
-def get_physical_eta_units(e):
-    '''
-    Converts resistivity from code units to cgs units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in code units
-    '''
-    return e * settings.UNIT_LENGTH * settings.UNIT_VELOCITY
-
-def get_eta_code_units(e):
-    '''
-    Converts resistivity from cgs units to code units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in cgs units
-    '''
-    return e / get_physical_eta_units(1)
-
-def eta_cgs_to_si(e):
-    '''
-    Converts resistivity from cgs units to SI units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in cgs units
-    '''
-    return e * 10**11 / const.c.to('cm/s').value**2
-
-def eta_si_to_cgs(e):
-    '''
-    Converts resistivity from SI units to cgs units
-
-    Parameters
-    ----------
-    e : np.ndarray
-        Resistivity field in SI units
-    '''
-    return e / eta_cgs_to_si(1)

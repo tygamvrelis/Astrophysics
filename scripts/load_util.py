@@ -6,6 +6,7 @@ import os
 import sys
 import pyPLUTO as pp
 import numpy as np
+import astropy.units as u
 from settings import *
 
 def load_user_params(w_dir):
@@ -68,6 +69,7 @@ def load_unit_constants(w_dir):
     UNIT_DENSITY  = sys.maxint
     UNIT_VELOCITY = sys.maxint
     UNIT_LENGTH   = sys.maxint
+    UNIT_TIME     = sys.maxint
     try:
         print("Attempting to load unit constants")
         with open(os.path.join(w_dir, "unit_constants.dat"), "r") as f:
@@ -75,33 +77,37 @@ def load_unit_constants(w_dir):
                 l = line.split(" ")
                 assert(len(l) == 2), "Error reading unit_constants.dat ({0})".format(l)
                 if l[0].startswith("UNIT_DENSITY"):
-                    UNIT_DENSITY = float(l[1])
+                    UNIT_DENSITY = float(l[1]) * u.g / u.cm**3
                 elif l[0].startswith("UNIT_VELOCITY"):
-                    UNIT_VELOCITY = float(l[1])
+                    UNIT_VELOCITY = float(l[1]) * u.cm / u.s
                 elif l[0].startswith("UNIT_LENGTH"):
-                    UNIT_LENGTH = float(l[1])
+                    UNIT_LENGTH = float(l[1]) * u.cm
     except IOError as e:
         print(e)
         print("WARNING: Using default unit constants (not loaded from run)")
-        UNIT_DENSITY  = 1.0e-9
-        UNIT_VELOCITY = 1.0e5
-        UNIT_LENGTH   = 1.6*6.9911e9 / 1.2
+        UNIT_DENSITY  = 1.0e-9 * u.g / u.cm**3
+        UNIT_VELOCITY = 1.0e5 * u.cm / u.s
+        UNIT_LENGTH   = 1.6*6.9911e9 / 1.2 * u.cm
+    UNIT_TIME = UNIT_LENGTH / UNIT_VELOCITY
 
-    print("Using unit constants:\n\tUNIT_DENSITY = {0} [g/cm]\n"
-          "\tUNIT_VELOCITY = {1} [cm/s]\n"
-          "\tUNIT_LENGTH = {2} [cm]\n".format(
-            UNIT_DENSITY, UNIT_VELOCITY, UNIT_LENGTH
+    print("Using unit constants:\n\tUNIT_DENSITY = {0}\n"
+          "\tUNIT_VELOCITY = {1}\n"
+          "\tUNIT_LENGTH = {2}\n"
+          "\tUNIT_TIME = {3}\n".format(
+            UNIT_DENSITY, UNIT_VELOCITY, UNIT_LENGTH, UNIT_TIME
         )
     )
 
     assert(UNIT_DENSITY != sys.maxint and
            UNIT_VELOCITY != sys.maxint and
-           UNIT_LENGTH != sys.maxint), "Your unit constants don't make sense!"
+           UNIT_LENGTH != sys.maxint and
+           UNIT_TIME != sys.maxint), "Your unit constants don't make sense!"
     
     settings.UNIT_DENSITY = UNIT_DENSITY
     settings.UNIT_VELOCITY = UNIT_VELOCITY
     settings.UNIT_LENGTH = UNIT_LENGTH
-    return UNIT_DENSITY, UNIT_VELOCITY, UNIT_LENGTH
+    settings.UNIT_TIME = UNIT_TIME
+    return UNIT_DENSITY, UNIT_VELOCITY, UNIT_LENGTH, UNIT_TIME
 
 def load_pluto_dataframes(w_dir):
     """
@@ -119,7 +125,7 @@ def load_pluto_dataframes(w_dir):
         data.append(d)
     return data
 
-def load_vector_field_3d(ref_frame, w_dir, fname="eta_field.dat"):
+def load_vector_field_3d(ref_frame, w_dir, fname):
     """
     Loads a vector field from a file into a numpy array. Order of iteration is
     k-dir, j-dir, i-dir, and each line contains the field components in order
@@ -132,7 +138,7 @@ def load_vector_field_3d(ref_frame, w_dir, fname="eta_field.dat"):
     w_dir : str
         The location where the file is to be loaded from
     fname : str
-        The name of the file to load the resistivity field from
+        The name of the file to load the vector field from
     """
     r_tot     = ref_frame.n1_tot
     theta_tot = ref_frame.n2_tot
@@ -159,9 +165,8 @@ def load_vector_field_3d(ref_frame, w_dir, fname="eta_field.dat"):
                 fijk = data[idx].split(" ")
                 fijk = [float(e) for e in fijk]
                 assert(len(fijk) == 3), \
-                    "Wrong number of field components (i,j,k)=({0},{1},{2})".format(
-                        i, j, k
-                    )
+                    "Wrong number of field components " \
+                    "(i,j,k)=({0},{1},{2})".format(i, j, k)
                 fx1[i,j,k] = fijk[0]
                 fx2[i,j,k] = fijk[1]
                 fx3[i,j,k] = fijk[2]

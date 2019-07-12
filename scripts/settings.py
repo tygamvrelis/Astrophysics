@@ -10,6 +10,7 @@ class Settings(object):
         self.__P_first = True
         self.__V_first = True
         self.__L_first = True
+        self.__T_first = True
         self.__user_params_first = True
         self.__B0_first = True
         self.__eta_first = True
@@ -52,6 +53,19 @@ class Settings(object):
         else:
             self.__L_first = False
         self.__L = value
+
+    @property
+    def UNIT_TIME(self):
+        return self.__T
+    
+    @UNIT_TIME.setter
+    def UNIT_TIME(self, value):
+        if not self.__T_first and value != self.__T:
+            print("WARNING: Overwriting UNIT_TIME!")
+            print("\tNew: {0}, prev: {1}".format(value, self.__T))
+        else:
+            self.__T_first = False
+        self.__T = value
 
     @property
     def user_params(self):

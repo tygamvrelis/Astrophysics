@@ -219,7 +219,9 @@ def plot_2d(
                     plt.colorbar()
             if arrows:
                 plt.quiver(X, Y, U, V)
-            annotations[0] = annotations[0] + ' (time: ' + str(np.round(data[idx].SimTime, 2)) + ')'
+            annotations[0] = annotations[0] + \
+                            " (time: " + str(np.round(data[idx].SimTime, 2)) + ')'  + \
+                            " (" + qty.unit + ")"
             plt.title(annotations[0])
             plt.xlabel(annotations[1])
             if single_only or idx % ncols == 0:
