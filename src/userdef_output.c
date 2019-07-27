@@ -11,15 +11,21 @@ void ComputeUserVar (const Data *d, Grid *grid)
   double ***Jx3 = GetUserVar("Jx3");
   
   DOM_LOOP(k,j,i){
+#if RESISTIVITY != NO
   	Jx1[k][j][i] = d->J[IDIR][k][j][i];
   	Jx2[k][j][i] = d->J[JDIR][k][j][i];
   	Jx3[k][j][i] = d->J[KDIR][k][j][i];
+#else
+  	Jx1[k][j][i] = 0;
+  	Jx2[k][j][i] = 0;
+  	Jx3[k][j][i] = 0;
+#endif
   }
 }
 
 //-----------------------------------------------------------------------------
 
-void ChangeOutputVar ()
+void ChangeDumpVar ()
 { 
 
 }
