@@ -1,9 +1,9 @@
 #!/bin/bash -l
 #PBS -l nodes=1:ppn=8
-#PBS -l walltime=12:00:00
+#PBS -l walltime=6:00:00
 #PBS -r n
 #PBS -j oe
-#PBS -q workq
+#PBS -q hpq
 
 # NOTE: for hpq and sandyq, ppn<=16
 #       for greenq ppn<=32
@@ -11,7 +11,7 @@
 # If you are using nodes=1 and ppn<=8, please use the workq instead
 
 # go to your working directory
-cd /home/gamvrelis/PLUTO/Work/del/resistivity_profile
+cd /home/gamvrelis/PLUTO_4.2/Work/resistivity_profile
 
 # Load your modules
 # If you use module purge, make sure to load the maui and torque modules
@@ -20,10 +20,11 @@ cd /home/gamvrelis/PLUTO/Work/del/resistivity_profile
 # module load maui torque
 
 # Intel compiler and MPI
-module load intel intelmpi
+#module load intel intelmpi
 
 # or for OpenMPI
-# module load gcc/7.3.0 openmpi/3.0.0-gcc-7.3.0
+#module load gcc/7.3.0 openmpi/3.0.0-gcc-7.3.0
+module load gcc/4.8.2  openmpi/1.6.5-gcc-4.8.2
 
 #mpirun ./your_mpi_code your_arguments
 
@@ -32,4 +33,5 @@ module load intel intelmpi
 # mpirun load balancing options
 # e.g., for OpenMPI one
 
-mpirun -np 8 -map-by node:SPAN ./pluto
+#mpirun -np 8 -map-by node:SPAN ./pluto 
+mpirun -np 16 ./pluto 
