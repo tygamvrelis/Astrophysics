@@ -160,9 +160,9 @@ void Analysis (const Data *d, Grid *grid)
     {
       first = false;
       double *x1, *x2, *x3;
-      x1 = grid->xgc[IDIR];
-      x2 = grid->xgc[JDIR];
-      x3 = grid->xgc[KDIR];
+      x1 = grid[IDIR].xgc;
+      x2 = grid[JDIR].xgc;
+      x3 = grid[KDIR].xgc;
 
       // Log the background field to a file so that it can be read in an analysis
       // script
@@ -175,7 +175,7 @@ void Analysis (const Data *d, Grid *grid)
         fprintf(fp, "%f %f %f\n", B0[IDIR], B0[JDIR], B0[KDIR]);
       }
       fclose(fp);
-      
+
 #if RESISTIVITY != NO
       sprintf(fname, "%s/eta_field.dat", RuntimeGet()->output_dir);
       fp = fopen(fname, "w");
@@ -235,9 +235,12 @@ void Analysis (const Data *d, Grid *grid)
       {
         // Compute volume integral of eta*|J|^2
         // Use Test_Problems/MHD/Shearing_Box as a reference for how to do this
+        double* dVx = grid[IDIR].dV;
+        double* dVy = grid[JDIR].dV;
+        double* dVz = grid[KDIR].dV;
         Data_Arr etas = GetStaggeredEta();
         DOM_LOOP(k,j,i){
-          double dV  = grid->dV[k][j][i];
+          double dV  = dVx[i] * dVy[j] * dVz[k];
           double Jx1 = d->J[IDIR][k][j][i];
           double Jx2 = d->J[JDIR][k][j][i];
           double Jx3 = d->J[KDIR][k][j][i];
@@ -267,9 +270,9 @@ void UserDefBoundary (const Data *d, RBox *box, int side, Grid *grid)
   double *x1, *x2, *x3;
   double rs;
 
-  x1 = grid->xgc[IDIR];
-  x2 = grid->xgc[JDIR];
-  x3 = grid->xgc[KDIR];
+  x1 = grid[IDIR].xgc;
+  x2 = grid[JDIR].xgc;
+  x3 = grid[KDIR].xgc;
 
   if (side == X1_END)
   {

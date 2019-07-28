@@ -7,7 +7,7 @@ import astropy.constants as const
 from load_util import load_vector_field_3d
 from settings import *
 
-def get_field_qty(field, df=None, bg_field=True):
+def get_field_qty(field, df=None, bg_field=False):
     """
     Wrapper for retrieving field quantities from a PLUTO data frame
 
@@ -40,18 +40,33 @@ def get_field_qty(field, df=None, bg_field=True):
         elif field == 'v_phi':
             qty = df.vx3
     elif plot_b:
-        if field == 'b_r':
-            qty = df.Bx1
-            if bg_field:
-                qty = np.copy(qty) + settings.B0.Bx1
-        elif field == 'b_theta':
-            qty = df.Bx2
-            if bg_field:
-                qty = np.copy(qty) + settings.B0.Bx2
-        elif field == 'b_phi':
-            qty = df.Bx3
-            if bg_field:
-                qty = np.copy(qty) + settings.B0.Bx3
+        # Accept both conventions since this has changed over time
+        try:
+            if field == 'b_r':
+                qty = df.Bx1
+                if bg_field:
+                    qty = np.copy(qty) + settings.B0.Bx1
+            elif field == 'b_theta':
+                qty = df.Bx2
+                if bg_field:
+                    qty = np.copy(qty) + settings.B0.Bx2
+            elif field == 'b_phi':
+                qty = df.Bx3
+                if bg_field:
+                    qty = np.copy(qty) + settings.B0.Bx3
+        except:
+            if field == 'b_r':
+                qty = df.bx1
+                if bg_field:
+                    qty = np.copy(qty) + settings.B0.Bx1
+            elif field == 'b_theta':
+                qty = df.bx2
+                if bg_field:
+                    qty = np.copy(qty) + settings.B0.Bx2
+            elif field == 'b_phi':
+                qty = df.bx3
+                if bg_field:
+                    qty = np.copy(qty) + settings.B0.Bx3
     elif plot_j:
         # Accept both conventions since this has changed over time
         try:
