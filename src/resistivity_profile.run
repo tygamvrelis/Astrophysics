@@ -24,7 +24,7 @@ cd /home/gamvrelis/PLUTO_4.2/Work/resistivity_profile
 
 # or for OpenMPI
 #module load gcc/7.3.0 openmpi/3.0.0-gcc-7.3.0
-module load gcc/4.8.2  openmpi/1.6.5-gcc-4.8.2
+module load gcc/4.8.2 openmpi/1.6.5-gcc-4.8.2
 
 #mpirun ./your_mpi_code your_arguments
 
