@@ -124,16 +124,18 @@ class EtaField:
     
     def assign_field(self, etax1, etax2, etax3):
         """
-        Allows existing arrays to be assigned to the internal field
+        Allows existing arrays to be assigned to the internal field.
+        
+        Also converts to physical units (SI) from code units.
 
         Parameters
         ----------
         etaxi : np.ndarray
             Field quantity about i = 1, 2, 3 coordinates
         """
-        self.ex1 = etax1
-        self.ex2 = etax2
-        self.ex3 = etax3
+        self.ex1 = eta_cgs_to_si(get_physical_eta_units(etax1))
+        self.ex2 = eta_cgs_to_si(get_physical_eta_units(etax2))
+        self.ex3 = eta_cgs_to_si(get_physical_eta_units(etax3))
         
     def __truediv__(self, other):
         """
@@ -212,16 +214,18 @@ class MagField:
     
     def assign_field(self, B0x1, B0x2, B0x3):
         """
-        Allows existing arrays to be assigned to the internal field
+        Allows existing arrays to be assigned to the internal field.
+        
+        Also converts to physical units (SI) from code units.
 
         Parameters
         ----------
         B0xi : np.ndarray
             Field quantity about i = 1, 2, 3 coordinates
         """
-        self.Bx1 = B0x1
-        self.Bx2 = B0x2
-        self.Bx3 = B0x3
+        self.Bx1 = get_physical_b_units(B0x1)
+        self.Bx2 = get_physical_b_units(B0x2)
+        self.Bx3 = get_physical_b_units(B0x3)
     
     def __truediv__(self, other):
         """
