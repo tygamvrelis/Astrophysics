@@ -6,7 +6,7 @@
 
 pluto:                              # Default target
 
-ARCH         = Linux.gcc.defs
+ARCH         = Linux.mpicc.defs
 PLUTO_DIR    = /home/gamvrelis/PLUTO_4.2
 SRC          = $(PLUTO_DIR)/Src
 INCLUDE_DIRS = -I. -I$(SRC)
